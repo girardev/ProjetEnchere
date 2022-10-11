@@ -69,26 +69,52 @@ public class GestionBdD {
                         propose_par integer not null
                     )
                     """);
+            st.executeUpdate(
+                    """
+                    create table enchere (
+                        id integer not null primary key
+                        generated always as identity,
+                        quand timestamp without time zone not null,
+                        montant integer not null,
+                        de integer not null,
+                        sur integer not null
+                    )
+                    """);
+            st.executeUpdate(
+                    """
+                    create table categorie (
+                        id integer not null primary key
+                        generated always as identity,
+                        nom varchar(50) integer not null,
+                    )
+                    """);
+            // je defini les liens entre les clés externes et les clés primaires
+            // correspondantes
+            st.executeUpdate(
+                    """
+                    alter table enchere
+                        add constraint fk_enchere_de
+                        foreign key (de) references utilisateur(id)
+                    
+                    """);
+            st.executeUpdate(
+                    """
+                    alter table enchere
+                        add constraint fk_enchere_sur
+                        foreign key (sur) references objet(id)
+                    
+                    """);
 //            st.executeUpdate(
 //                    """
-//                    create table aime (
-//                        u1 integer not null,
-//                        u2 integer not null
-//                    )
+//                    alter table objet
+//                        add constraint fk_objet_categorie
+//                        foreign key (categorie) references objet(id)
 //                    """);
-//            // je defini les liens entre les clés externes et les clés primaires
-//            // correspondantes
 //            st.executeUpdate(
 //                    """
-//                    alter table aime
-//                        add constraint fk_aime_u1
-//                        foreign key (u1) references utilisateur(id)
-//                    """);
-//            st.executeUpdate(
-//                    """
-//                    alter table aime
-//                        add constraint fk_aime_u2
-//                        foreign key (u2) references utilisateur(id)
+//                    alter table objet
+//                        add constraint fk_objet_propose_par
+//                        foreign key (propose_par) references utilisateur(id)
 //                    """);
             // si j'arrive jusqu'ici, c'est que tout s'est bien passé
             // je confirme (commit) la transaction
@@ -154,6 +180,33 @@ public class GestionBdD {
             } catch (SQLException ex) {
                 // nothing to do : maybe the table was not created
             }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table objet
+                    """);
+                System.out.println("table objet dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table enchere
+                    """);
+                System.out.println("table enchere dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table categorie
+                    """);
+                System.out.println("table categorie dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
         }
     }
 
@@ -161,10 +214,11 @@ public class GestionBdD {
         try {
             Connection con = defautConnect();
             System.out.println("Connection ON");
-            //creeSchema(con);
-            System.out.println("Création schéma ON");
             deleteSchema(con);
             System.out.println("Suppression schéma ON");
+            creeSchema(con);
+            System.out.println("Création schéma ON");
+
         } catch (ClassNotFoundException ex) {
             throw new Error(ex);
         } catch (SQLException ex) {
