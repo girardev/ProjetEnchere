@@ -48,17 +48,25 @@ public class GestionBdD {
                     create table utilisateur (
                         id integer not null primary key
                         generated always as identity,
-                        nom varchar(30) not null unique,
-                        pass varchar(30) not null
+                        nom varchar(30) not null,
+                        prenom varchar(30) not null,
+                        pass varchar(30) not null,
+                        email varchar(50) not null unique,
+                        code_postal varchar(30) not null
                     )
                     """);
             st.executeUpdate(
                     """
-                    create table utilisateur (
+                    create table objet (
                         id integer not null primary key
                         generated always as identity,
-                        nom varchar(30) not null unique,
-                        pass varchar(30) not null
+                        titre varchar(500) not null,
+                        description text not null,
+                        debut timestamp without time zone not null,
+                        fin timestamp without time zone not null,
+                        prix_base integer not null,
+                        categorie integer not null,
+                        propose_par integer not null
                     )
                     """);
 //            st.executeUpdate(
