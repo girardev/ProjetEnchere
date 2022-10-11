@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * test git
  * @author grego_9h4zwhb
  */
 public class GestionBdD {
