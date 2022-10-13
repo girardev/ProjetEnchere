@@ -33,7 +33,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "0000");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -81,11 +81,11 @@ public class GestionBdD {
                     )
                     """);
             st.executeUpdate(
-                    """
+                   """
                     create table categorie (
-                        id integer not null primary key
-                        generated always as identity,
-                        nom varchar(50) integer not null,
+                       id integer not null primary key
+                       generated always as identity,
+                       nom varchar(50) not null
                     )
                     """);
             // je defini les liens entre les clés externes et les clés primaires
