@@ -104,18 +104,18 @@ public class GestionBdD {
                         foreign key (sur) references objet(id)
                     
                     """);
-//            st.executeUpdate(
-//                    """
-//                    alter table objet
-//                        add constraint fk_objet_categorie
-//                        foreign key (categorie) references objet(id)
-//                    """);
-//            st.executeUpdate(
-//                    """
-//                    alter table objet
-//                        add constraint fk_objet_propose_par
-//                        foreign key (propose_par) references utilisateur(id)
-//                    """);
+            st.executeUpdate(
+                    """
+                    alter table objet
+                        add constraint fk_objet_categorie
+                        foreign key (categorie) references categorie(id)
+                    """);
+            st.executeUpdate(
+                    """
+                    alter table objet
+                        add constraint fk_objet_propose_par
+                        foreign key (propose_par) references utilisateur(id)
+                    """);           
             // si j'arrive jusqu'ici, c'est que tout s'est bien passé
             // je confirme (commit) la transaction
             con.commit();
@@ -141,36 +141,48 @@ public class GestionBdD {
             // pour être sûr de pouvoir supprimer, il faut d'abord supprimer les liens
             // puis les tables
             // suppression des liens
-//            try {
-//                st.executeUpdate(
-//                        """
-//                    alter table aime
-//                        drop constraint fk_aime_u1
-//                             """);
-//                System.out.println("constraint fk_aime_u1 dropped");
-//            } catch (SQLException ex) {
-//                // nothing to do : maybe the constraint was not created
-//            }
-//            try {
-//                st.executeUpdate(
-//                        """
-//                    alter table aime
-//                        drop constraint fk_aime_u2
-//                    """);
-//                System.out.println("constraint fk_aime_u2 dropped");
-//            } catch (SQLException ex) {
-//                // nothing to do : maybe the constraint was not created
-//            }
-//            // je peux maintenant supprimer les tables
-//            try {
-//                st.executeUpdate(
-//                        """
-//                    drop table aime
-//                    """);
-//                System.out.println("dable aime dropped");
-//            } catch (SQLException ex) {
-//                // nothing to do : maybe the table was not created
-//            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_de
+                             """);
+                System.out.println("constraint fk_enchere_de dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_sur
+                    """);
+                System.out.println("constraint fk_enchere_sur dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_categorie
+                    """);
+                System.out.println("constraint fk_objet_categorie dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_propose_par
+                    """);
+                System.out.println("constraint fk_objet_propose_par dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            
+            //une fois les contraintes supprimées, on peut supprimer les tables :
             try {
                 st.executeUpdate(
                         """
