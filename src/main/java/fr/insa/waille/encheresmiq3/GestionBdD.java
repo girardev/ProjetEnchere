@@ -7,6 +7,7 @@ package fr.insa.waille.encheresmiq3;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -221,15 +222,97 @@ public class GestionBdD {
             }
         }
     }
+    
+    public static void afficheUtilisateurs(Connection con)
+            throws SQLException{
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            ResultSet resultats = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des utilisateurs:
+                    select * from utilisateur
+                    """
+            );
+            System.out.println("Liste des utilisateurs :");
+            while(resultats.next()){
+                int id = resultats.getInt("id");
+                String nom = resultats.getString("nom");
+                String prenom = resultats.getString("prenom");
+                String code_postal = resultats.getString("code_postal");
+                String email = resultats.getString("email");               
+                String pass = resultats.getString("pass");
+                System.out.println(id+":"+nom+""+prenom+""+code_postal+""+email+""+pass);
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        } 
+    }
+    
+    public static void menuTextuel(Connection con){
+        //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
+        boolean stop = false; //condition d'arret
+        while(stop==false){
+            System.out.println("Entrez un nombre pour sélectionner une option :");
+            System.out.println("1 - Creation du schéma");
+            System.out.println("2 - Suppression du schéma");
+            System.out.println("3 - Affichage liste utilisateurs");
+            System.out.println("4 - /");
+            System.out.println("99 - Quitter");
+            int reponse=-1; //reponse entrée par l'utilisateur
+            while(reponse<0){
+                reponse = Lire.i();
+            }
+            try{
+                switch (reponse){
+                    case 1 :                 
+                        creeSchema(con);
+                        System.out.println("Création schéma ON");
+                        break;
+                    case 2 :
+                        deleteSchema(con);
+                        System.out.println("Suppression schéma ON");
+                        break;
+                    case 3 :
+                        afficheUtilisateurs(con);
+                        System.out.println("utilisateurs récupérés OK");
+                        break;
+                    case 99 :
+                        stop = true;
+                        System.out.println("Vous avez quitté le menu");
+                        break;
+                    default: 
+                        System.out.println("pas encore défini");
+                        break;               
+                }
+            }
+            catch (SQLException ex) {
+                throw new Error(ex);
+            }
+        }
+    }
 
+    
     public static void main(String[] args) {
         try {
             Connection con = defautConnect();
-            System.out.println("Connection ON");
-            deleteSchema(con);
-            System.out.println("Suppression schéma ON");
-            creeSchema(con);
-            System.out.println("Création schéma ON");
+            menuTextuel(con);
+//            System.out.println("Connection ON");
+//            deleteSchema(con);
+//            System.out.println("Suppression schéma ON");
+//            creeSchema(con);
+//            System.out.println("Création schéma ON");
+//            afficheUtilisateurs(con);
+//            System.out.println("utilisateurs récupérés OK");
 
         } catch (ClassNotFoundException ex) {
             throw new Error(ex);
