@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "0000");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "pass");
     }
     
     public static void creeSchema(Connection con)
@@ -331,7 +331,7 @@ public class GestionBdD {
         }
     }
     
-    public static void creeEnchere(Connection con)
+    public static void creeEnchere(Connection con,String quand,int montant,int de,int sur)
                 throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -339,14 +339,6 @@ public class GestionBdD {
                     insert into enchere(quand, montant, de, sur)
                     values (?, ?, ?, ?, ?)
                     """)) {
-            System.out.println("quand :");
-            String quand = Lire.S();
-            System.out.println("montant:");
-            int montant = Lire.i();
-            System.out.println("de :");
-            int de = Lire.i();
-            System.out.println("sur :");
-            int sur = Lire.i();
             pst.setString(1, quand);
             pst.setInt(2, montant);
             pst.setInt(3, de);
@@ -362,13 +354,27 @@ public class GestionBdD {
      }
     }
     
+    public static void demandeEnchere(Connection con)
+                throws SQLException {
+            System.out.println("quand :");
+            String quand = Lire.S();
+            System.out.println("montant:");
+            int montant = Lire.i();
+            System.out.println("de :");
+            int de = Lire.i();
+            System.out.println("sur :");
+            int sur = Lire.i();
+            creeEnchere(con, quand, montant, de, sur);
+            
+    }
+    
     public static void afficheCategorie(Connection con)
             throws SQLException{
         con.setAutoCommit(false);
         try(Statement st = con.createStatement()){
             ResultSet resultats = st.executeQuery(
                     """
-                    ---ordre SQL pour récupérer la liste des categories :
+                    ---ordre SQL pour récupérer la liste des categories ;
                     select * from categorie
                     """
             );
@@ -393,7 +399,7 @@ public class GestionBdD {
         } 
     }
     
-    public static void creeCategorie(Connection con)
+    public static void creeCategorie(Connection con,String nom)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -401,8 +407,6 @@ public class GestionBdD {
                     insert into categorie (nom)
                     values (?)
                     """)) {
-            System.out.println("nom categorie :");
-            String nom = Lire.S();
             pst.setString(1, nom);
             pst.executeUpdate();
             con.commit();
@@ -414,6 +418,13 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
     }
+
+    public static void demandeCategorie(Connection con)
+            throws SQLException {
+            System.out.println("nom categorie :");
+            String nom = Lire.S();
+            creeCategorie(con, nom);
+    }    
     
     public static void afficheObjets(Connection con)
             throws SQLException{
@@ -452,7 +463,7 @@ public class GestionBdD {
         }
     }
 
-    public static void creeObjet(Connection con)
+    public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -460,21 +471,6 @@ public class GestionBdD {
                     insert into objet (titre, description, debut, fin, prix_base, categorie, propose_par)
                     values (?, ?, ?, ?, ?, ?, ?)
                     """)) {
-            System.out.println("titre objet:");
-            String titre = Lire.S();
-            System.out.println("description objet:");
-            String description = Lire.S();
-            System.out.println("debut vente:");
-            String debut = Lire.S();
-            System.out.println("fin vente:");
-            String fin = Lire.S();
-            System.out.println("prix de base objet :");
-            int prix_base = Lire.i();
-            System.out.println("categorie objet :");
-            int categorie = Lire.i();
-            System.out.println("objet proposé par :");
-            int propose_par = Lire.i();
-            
             pst.setString(1, titre);
             pst.setString(2, description);
             pst.setString(3, debut);
@@ -492,6 +488,25 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
     }
+    
+    public static void demandeObjet(Connection con)
+            throws SQLException {
+            System.out.println("titre objet:");
+            String titre = Lire.S();
+            System.out.println("description objet:");
+            String description = Lire.S();
+            System.out.println("debut vente:");
+            String debut = Lire.S();
+            System.out.println("fin vente:");
+            String fin = Lire.S();
+            System.out.println("prix de base objet :");
+            int prix_base = Lire.i();
+            System.out.println("categorie objet :");
+            int categorie = Lire.i();
+            System.out.println("objet proposé par :");
+            int propose_par = Lire.i();
+            creeObjet(con,titre,description,debut,fin,prix_base,categorie,propose_par);
+    }    
     
     public static void menuTextuel(Connection con){
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
@@ -536,7 +551,7 @@ public class GestionBdD {
                         System.out.println("categories récupérées OK");
                         break;
                     case 6 :
-                        creeCategorie(con);
+                        demandeCategorie(con);
                         System.out.println(" categories créées OK");
                         break;
                     case 7 :
@@ -544,7 +559,7 @@ public class GestionBdD {
                         System.out.println("encheres récupérées OK");
                         break;
                     case 8 :
-                        creeEnchere(con);
+                        demandeEnchere(con);
                         System.out.println(" encheres créées OK");
                         break;  
                     case 9 :
@@ -552,7 +567,7 @@ public class GestionBdD {
                         System.out.println("objets récupérés OK");
                         break;
                     case 10 :
-                        creeObjet(con);
+                        demandeObjet(con);
                         System.out.println(" objet créés OK");
                         break;  
                     case 99 :
