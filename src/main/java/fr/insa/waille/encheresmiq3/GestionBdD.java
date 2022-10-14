@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "0000");
     }
     
     public static void creeSchema(Connection con)
@@ -241,7 +241,7 @@ public class GestionBdD {
                 String code_postal = resultats.getString("code_postal");
                 String email = resultats.getString("email");               
                 String pass = resultats.getString("pass");
-                System.out.println(id+":"+nom+""+prenom+""+code_postal+""+email+""+pass);
+                System.out.println(id+" : "+nom+" "+prenom+" "+email+" "+pass+" "+code_postal);
             }
         }
         catch (SQLException ex) {
@@ -258,6 +258,40 @@ public class GestionBdD {
         } 
     }
     
+    public static void creeUtilisateur(Connection con)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        """
+                    insert into utilisateur (nom, prenom, pass, email, code_postal)
+                    values (?, ?, ?, ?, ?)
+                    """)) {
+            System.out.println("nom utilisateur :");
+            String nom = Lire.S();
+            System.out.println("prenom utilisateur:");
+            String prenom = Lire.S();
+            System.out.println("pass utilisateur :");
+            String pass = Lire.S();
+            System.out.println("email utilisateur :");
+            String email = Lire.S();
+            System.out.println("code_postal utilisateur :");
+            String code_postal = Lire.S(); 
+            pst.setString(1, nom);
+            pst.setString(2, prenom);
+            pst.setString(3, pass);
+            pst.setString(4, email);
+            pst.setString(5,code_postal);
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
     public static void menuTextuel(Connection con){
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
         boolean stop = false; //condition d'arret
@@ -266,7 +300,7 @@ public class GestionBdD {
             System.out.println("1 - Creation du schéma");
             System.out.println("2 - Suppression du schéma");
             System.out.println("3 - Affichage liste utilisateurs");
-            System.out.println("4 - /");
+            System.out.println("4 - Ajouter un utilisateur");
             System.out.println("99 - Quitter");
             int reponse=-1; //reponse entrée par l'utilisateur
             while(reponse<0){
@@ -286,6 +320,10 @@ public class GestionBdD {
                         afficheUtilisateurs(con);
                         System.out.println("utilisateurs récupérés OK");
                         break;
+                    case 4 :
+                        creeUtilisateur(con);
+                        System.out.println("utilisateur créé OK");
+                        break;  
                     case 99 :
                         stop = true;
                         System.out.println("Vous avez quitté le menu");
