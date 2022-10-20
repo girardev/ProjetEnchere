@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "pass");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -437,6 +437,42 @@ public class GestionBdD {
                     """
             );
             System.out.println("Liste des objets :");
+            while(resultats.next()){
+                int id = resultats.getInt("id");
+                String titre = resultats.getString("titre");
+                String description = resultats.getString("description");
+                String debut = resultats.getString("debut");
+                String fin = resultats.getString("fin");              
+                String prix_base = resultats.getString("prix_base");
+                int categorie = resultats.getInt("categorie");
+                int propose_par = resultats.getInt("propose_par");
+                System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+    }
+    
+    public static void rechercheObjetparMotCle(Connection con, String motCle)
+            throws SQLException{
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            ResultSet resultats = st.executeQuery(
+                    """
+                    select * from objet where titre like '_motCle_' or description like '_motCle_'
+                    """
+            );
+            System.out.println("Résultats recherche :");
             while(resultats.next()){
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
