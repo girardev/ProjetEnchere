@@ -304,7 +304,7 @@ public class GestionBdD {
             ResultSet resultats = st.executeQuery(
                     """
                     ---ordre SQL pour récupérer la liste des encheres:
-                    select * from encheres
+                    select * from enchere
                     """
             );
             System.out.println("Liste des encheres :");
@@ -585,6 +585,163 @@ public class GestionBdD {
             creeObjet(con,titre,description,debut,fin,prix_base,categorie,propose_par);
     }    
     
+    public static void deleteAllUtilisateurs(Connection con) throws SQLException {
+        try ( Statement st = con.createStatement()) {
+            try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_de
+                             """);
+                System.out.println("constraint fk_enchere_de dropped");
+            } catch (SQLException ex) {
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_propose_par
+                    """);
+                System.out.println("constraint fk_objet_propose_par dropped");
+            } catch (SQLException ex) {
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table utilisateur
+                    """);
+                System.out.println("table utilisateur dropped");
+            } catch (SQLException ex) {
+            }
+        }
+    }
+    
+    public static void deleteAllObjets(Connection con) throws SQLException {
+        try ( Statement st = con.createStatement()) {
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_categorie
+                    """);
+                System.out.println("constraint fk_objet_categorie dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_propose_par
+                    """);
+                System.out.println("constraint fk_objet_propose_par dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+             try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_sur
+                    """);
+                System.out.println("constraint fk_enchere_sur dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table objet
+                    """);
+                System.out.println("table objet dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
+        }
+    }
+    
+    public static void deleteAllEncheres(Connection con) throws SQLException {
+        try ( Statement st = con.createStatement()) {
+            try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_de
+                             """);
+                System.out.println("constraint fk_enchere_de dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    alter table enchere
+                        drop constraint fk_enchere_sur
+                    """);
+                System.out.println("constraint fk_enchere_sur dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table enchere
+                    """);
+                System.out.println("table enchere dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
+        }
+    }
+    
+    public static void deleteAllCategories(Connection con) throws SQLException {
+        try ( Statement st = con.createStatement()) {
+            try {
+                st.executeUpdate(
+                        """
+                    alter table objet
+                        drop constraint fk_objet_categorie
+                    """);
+                System.out.println("constraint fk_objet_categorie dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the constraint was not created
+            }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table categorie
+                    """);
+                System.out.println("table categorie dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
+        }
+    }
+    
+   ​​​​​public static void creeSchemaDeBase (Connection con)throws SQLException {
+            con.setAutoCommit(false);{
+            creeUtilisateur(con, "waille", "gregory", "0000", "gregory.waille@insa-strasbourg.fr", "69680" );
+            creeUtilisateur(con, "varlet", "arthur", "azerty", "arthur.varlet@insa-strasbourg.fr", "37550" );
+            creeUtilisateur(con, "girardet", "valentin", "pass", "valentin.girardet1@insa-strasbourg.fr", "38080" );
+            creeCategorie(con, "meubles");
+            creeCategorie(con, "habits");
+            creeCategorie(con, "alcools");
+            creeObjet(con, "oettinger", "biere de luxe et rentable", "lundi", "vendredi", 1, 3, 1);
+            creeObjet(con, "jack_daniel", "whisky de luxe", "lundi", "jeudi", 20, 3, 2);
+            creeObjet(con, "gin", "bien deg", "mardi", "jeudi", 15, 3, 3);
+            creeObjet(con, "4 chaises", "robustes", "mardi", "vendredi", 50, 1, 1);
+            creeObjet(con, "table", "bois massif parfaite pour les reichtags", "mercredi", "jeudi", 100, 1, 2);
+            creeObjet(con, "2 girafes", "contenance 6L", "mardi", "samedi", 45, 1, 3);
+            creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2, 1);
+            creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2, 2);
+            creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2, 3);
+            creeEnchere(con, "mercredi", 25, 1, 2);
+            creeEnchere(con, "mercredi", 60, 2, 6);
+            creeEnchere(con, "mercredi", 150, 3, 5);
+            creeEnchere(con, "mercredi", 15, 3, 7);
+        }
+    }
+    
     public static void menuTextuel(Connection con){
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
         boolean stop = false; //condition d'arret
@@ -600,6 +757,10 @@ public class GestionBdD {
             System.out.println("8 - Ajouter une enchere");
             System.out.println("9 - Affichage liste objets");
             System.out.println("10 - Ajouter un objet");
+            System.out.println("11 - Supprimmer tous les utilisateurs");
+            System.out.println("12 - Supprimmer tous les objets");
+            System.out.println("13 - Supprimmer toutes les encheres");
+            System.out.println("14 - Supprimmer toutes les categories");
             System.out.println("15 - Rechercher un objet par catégorie");
             System.out.println("16 - Rechercher un objet par mot clé");
             System.out.println("99 - Quitter");
@@ -649,6 +810,22 @@ public class GestionBdD {
                         demandeObjet(con);
                         System.out.println(" objet créés OK");
                         break;
+                    case 11 :
+                        deleteAllUtilisateurs(con);
+                        System.out.println(" utilisateurs supprimés OK");
+                        break;
+                    case 12 :
+                        deleteAllObjets(con);
+                        System.out.println(" objets supprimés OK");
+                        break;
+                    case 13 :
+                        deleteAllEncheres(con);
+                        System.out.println(" encheres supprimées OK");
+                        break;
+                    case 14 :
+                        deleteAllCategories(con);
+                        System.out.println("categories supprimées OK");
+                        break;
                     case 15 :
                         System.out.println(" Rentrer l'identifiant de la categorie recherchée");
                         int id = Lire.i();
@@ -676,6 +853,9 @@ public class GestionBdD {
     public static void main(String[] args) {
         try {
             Connection con = defautConnect();
+            deleteSchema(con);
+            creeSchema(con);
+            creeSchemaDeBase(con);
             menuTextuel(con);
 //            System.out.println("Connection ON");
 //            deleteSchema(con);
