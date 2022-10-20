@@ -337,7 +337,7 @@ public class GestionBdD {
         try (PreparedStatement pst = con.prepareStatement(
         """
                     insert into enchere(quand, montant, de, sur)
-                    values (?, ?, ?, ?, ?)
+                    values (?, ?, ?, ?)
                     """)) {
             pst.setString(1, quand);
             pst.setInt(2, montant);
