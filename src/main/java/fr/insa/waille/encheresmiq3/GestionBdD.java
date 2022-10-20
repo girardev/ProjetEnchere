@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
     }
     
     public static void creeSchema(Connection con)
@@ -63,8 +63,8 @@ public class GestionBdD {
                         generated always as identity,
                         titre varchar(500) not null,
                         description text not null,
-                        debut varchar(50),
-                        fin varchar(50),
+                        debut varchar(50) not null,
+                        fin varchar(50) not null,
                         prix_base integer not null,
                         categorie integer not null,
                         propose_par integer not null
@@ -75,7 +75,7 @@ public class GestionBdD {
                     create table enchere (
                         id integer not null primary key
                         generated always as identity,
-                        quand varchar(50),
+                        quand varchar(50) not null,
                         montant integer not null,
                         de integer not null,
                         sur integer not null
@@ -600,6 +600,8 @@ public class GestionBdD {
             System.out.println("8 - Ajouter une enchere");
             System.out.println("9 - Affichage liste objets");
             System.out.println("10 - Ajouter un objet");
+            System.out.println("15 - Rechercher un objet par catégorie");
+            System.out.println("16 - Rechercher un objet par mot clé");
             System.out.println("99 - Quitter");
             int reponse=-1; //reponse entrée par l'utilisateur
             while(reponse<0){
@@ -646,7 +648,15 @@ public class GestionBdD {
                     case 10 :
                         demandeObjet(con);
                         System.out.println(" objet créés OK");
-                        break;  
+                        break;
+                    case 15 :
+                        System.out.println(" Rentrer l'identifiant de la categorie recherchée");
+                        int id = Lire.i();
+                        rechercheObjetParCategorie(con,id);
+                    case 16 :
+                        System.out.println(" Rentrer le mot clé de l'objet recherché");
+                        String motclé = Lire.S();
+                        rechercheObjetparMotCle(con,motclé); 
                     case 99 :
                         stop = true;
                         System.out.println("Vous avez quitté le menu");
