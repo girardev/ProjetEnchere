@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -467,18 +467,12 @@ public class GestionBdD {
             throws SQLException{
         con.setAutoCommit(false);
         try(Statement st = con.createStatement()){
-            ResultSet resultats = st.executeQuery(
-                    """
-                    ---ordre SQL pour récupérer la liste des objets:
-                    select categorie.nom, id, titre, description, debut, fin, prix_base,proposé_par
-                    from objet 
-                    join categorie on objet.categorie = categorie.id 
-                    where categorie.id = id_categorie
-                    """
-            );
+            String query = "select objet.id, titre, description, debut, fin, categorie, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = "+id_categorie+" ";
+
+            ResultSet resultats = st.executeQuery(query);
             System.out.println("Liste des objets :");
             while(resultats.next()){
-                String nom_categorie = resultats.getString("categorie.nom");
+                //String nom_categorie = resultats.getString("categorie.nom");
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
@@ -486,7 +480,7 @@ public class GestionBdD {
                 String fin = resultats.getString("fin");              
                 String prix_base = resultats.getString("prix_base");
                 int propose_par = resultats.getInt("propose_par");
-                System.out.println(nom_categorie+" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
+                System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
             }
         }
         catch (SQLException ex) {
@@ -508,11 +502,10 @@ public class GestionBdD {
             throws SQLException{
         con.setAutoCommit(false);
         try(Statement st = con.createStatement()){
-            ResultSet resultats = st.executeQuery(
-                    """
-                    select * from objet where titre like '_motCle_' or description like '_motCle_'
-                    """
-            );
+            //concaténation pour former la requête SQL voulue :
+            String query ="select * from objet where titre like '%"+motCle+"%' or description like '%"+motCle+"%'";
+            ResultSet resultats = st.executeQuery(query);
+            
             System.out.println("Résultats recherche :");
             while(resultats.next()){
                 int id = resultats.getInt("id");
@@ -718,8 +711,10 @@ public class GestionBdD {
         }
     }
     
-   ​​​​​public static void creeSchemaDeBase (Connection con)throws SQLException {
+    public static void creeSchemaDeBase(Connection con) throws SQLException {
             con.setAutoCommit(false);{
+            deleteSchema(con);
+            creeSchema(con);
             creeUtilisateur(con, "waille", "gregory", "0000", "gregory.waille@insa-strasbourg.fr", "69680" );
             creeUtilisateur(con, "varlet", "arthur", "azerty", "arthur.varlet@insa-strasbourg.fr", "37550" );
             creeUtilisateur(con, "girardet", "valentin", "pass", "valentin.girardet1@insa-strasbourg.fr", "38080" );
@@ -746,7 +741,7 @@ public class GestionBdD {
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
         boolean stop = false; //condition d'arret
         while(stop==false){
-            System.out.println("Entrez un nombre pour sélectionner une option :");
+            System.out.println("\nEntrez un nombre pour sélectionner une option :");
             System.out.println("1 - Creation du schéma");
             System.out.println("2 - Suppression du schéma");
             System.out.println("3 - Affichage liste utilisateurs");
@@ -830,6 +825,7 @@ public class GestionBdD {
                         System.out.println(" Rentrer l'identifiant de la categorie recherchée");
                         int id = Lire.i();
                         rechercheObjetParCategorie(con,id);
+                        break;
                     case 16 :
                         System.out.println(" Rentrer le mot clé de l'objet recherché");
                         String motclé = Lire.S();
@@ -853,17 +849,9 @@ public class GestionBdD {
     public static void main(String[] args) {
         try {
             Connection con = defautConnect();
-            deleteSchema(con);
-            creeSchema(con);
             creeSchemaDeBase(con);
             menuTextuel(con);
-//            System.out.println("Connection ON");
-//            deleteSchema(con);
-//            System.out.println("Suppression schéma ON");
-//            creeSchema(con);
-//            System.out.println("Création schéma ON");
-//            afficheUtilisateurs(con);
-//            System.out.println("utilisateurs récupérés OK");
+
 
         } catch (ClassNotFoundException ex) {
             throw new Error(ex);
