@@ -63,8 +63,8 @@ public class GestionBdD {
                         generated always as identity,
                         titre varchar(500) not null,
                         description text not null,
-                        debut timestamp without time zone not null,
-                        fin timestamp without time zone not null,
+                        debut varchar(50),
+                        fin varchar(50),
                         prix_base integer not null,
                         categorie integer not null,
                         propose_par integer not null
@@ -75,7 +75,7 @@ public class GestionBdD {
                     create table enchere (
                         id integer not null primary key
                         generated always as identity,
-                        quand timestamp without time zone not null,
+                        quand varchar(50),
                         montant integer not null,
                         de integer not null,
                         sur integer not null
