@@ -463,6 +463,47 @@ public class GestionBdD {
         }
     }
     
+    public static void rechercheObjetParCategorie(Connection con,int id_categorie)
+            throws SQLException{
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            ResultSet resultats = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des objets:
+                    select categorie.nom, id, titre, description, debut, fin, prix_base,proposé_par
+                    from objet 
+                    join categorie on objet.categorie = categorie.id 
+                    where categorie.id = id_categorie
+                    """
+            );
+            System.out.println("Liste des objets :");
+            while(resultats.next()){
+                String nom_categorie = resultats.getString("categorie.nom");
+                int id = resultats.getInt("id");
+                String titre = resultats.getString("titre");
+                String description = resultats.getString("description");
+                String debut = resultats.getString("debut");
+                String fin = resultats.getString("fin");              
+                String prix_base = resultats.getString("prix_base");
+                int propose_par = resultats.getInt("propose_par");
+                System.out.println(nom_categorie+" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+    }
+    
+    
     public static void rechercheObjetparMotCle(Connection con, String motCle)
             throws SQLException{
         con.setAutoCommit(false);
