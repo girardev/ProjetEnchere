@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package fr.insa.waille.encheresmiq3;
+package fr.insa.waille.encheresmiq3.bdd;
 
-import static fr.insa.waille.encheresmiq3.GestionBdD.creeUtilisateur;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
