@@ -24,7 +24,7 @@ public class Main extends Application {
         stage.setHeight(600);
         stage.setScene(sc);
         stage.setTitle("Encheres");
-          stage.show();
+        stage.show();
     }
 
     public static void main(String[] args) {
