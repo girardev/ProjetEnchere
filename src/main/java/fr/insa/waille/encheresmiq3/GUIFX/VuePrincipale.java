@@ -5,11 +5,14 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 
+import java.awt.Button;
+import java.awt.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+
 
 /**
  * vue principale.
@@ -18,23 +21,9 @@ import javafx.scene.layout.HBox;
  */
 public class VuePrincipale extends BorderPane {
     
-    
-    private HBox entete;
-    
-    private ScrollPane mainContent;
-    
-    public void setEntete(Node c) {
-        this.setTop(c);
-    }
-    
-    public void setMainContent(Node c) {
-        this.mainContent.setContent(c);
-    }
-    
     public VuePrincipale() {
-        this.mainContent = new ScrollPane();
-        this.setCenter(this.mainContent);
-        this.setMainContent(new Label("coucou"));
-        
+        BorderPane root = new BorderPane();
+        Label leftLabel = new Label("Inscription");
+        root.setLeft(leftLabel);
     }
 }
