@@ -34,7 +34,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "0000");
     }
     
     public static void creeSchema(Connection con)

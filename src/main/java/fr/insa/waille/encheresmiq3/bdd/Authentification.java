@@ -290,13 +290,14 @@ public class Authentification extends javax.swing.JFrame {
         String pass = jPasswordField1.getText();
         String email = jTextField4.getText();
         String code_postal = jTextField6.getText();
-            
-        try {
-            creeUtilisateur(con,nom,prenom,pass,email,code_postal);
-        } catch (SQLException ex) {
-            Logger.getLogger(Authentification.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+           
+        //TODO
+//        try {
+//            creeUtilisateur(con,nom,prenom,pass,email,code_postal);
+//        } catch (SQLException ex) {
+//            Logger.getLogger(Authentification.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
         System.out.println("utilisateur créé OK");
         
         jTextField1.setText("");
