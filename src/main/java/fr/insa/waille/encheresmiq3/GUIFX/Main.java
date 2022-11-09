@@ -18,7 +18,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
-        Scene sc = new Scene(new VuePrincipale());
+        Scene sc = new Scene(new GridPaneAuthentification());
 //        Scene sc = new Scene(new TestFx());
         stage.setWidth(1000);
         stage.setHeight(600);
