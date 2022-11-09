@@ -25,7 +25,7 @@ public class GridPaneAuthentification extends GridPane {
         TextField pass = new TextField();
         Label labelEmail = new Label("email");
         TextField email = new TextField();
-        //ajout des composants au GridPane
+        //ajout des composants au GridPane (colonne,ligne)
         this.add(titre,0,0);
         this.add(labelNom, 0, 1);
         this.add(nom, 1, 1);
@@ -42,7 +42,7 @@ public class GridPaneAuthentification extends GridPane {
         TextField pass2 = new TextField();
         Label labelEmail2 = new Label("email");
         TextField email2 = new TextField();
-        //ajout des composants au GridPane
+        //ajout des composants au GridPane (colonne,ligne)
         this.add(titre2,2,0);
         this.add(labelPass2, 2, 1);
         this.add(pass2, 3, 1);
