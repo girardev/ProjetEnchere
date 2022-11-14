@@ -4,9 +4,13 @@
  */
 package fr.insa.waille.encheresmiq3.GUIFX;
 
+import java.awt.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+
 
 /**
  *
@@ -25,6 +29,18 @@ public class GridPaneAuthentification extends GridPane {
         TextField pass = new TextField();
         Label labelEmail = new Label("email");
         TextField email = new TextField();
+        Label labelCodePostal = new Label("code postal");
+        TextField CodePostal = new TextField();
+        Button B_Inscription = new Button("Inscription");
+        Label panneau = new Label();
+        
+        B_Inscription.setOnAction((t) ->{
+            System.out.println("coucou");
+        });
+                
+                
+                
+        
         //ajout des composants au GridPane (colonne,ligne)
         this.add(titre,0,0);
         this.add(labelNom, 0, 1);
@@ -35,6 +51,15 @@ public class GridPaneAuthentification extends GridPane {
         this.add(pass, 1, 3);
         this.add(labelEmail, 0, 4);
         this.add(email, 1, 4);
+        this.add(labelCodePostal, 0, 5);
+        this.add(CodePostal, 1, 5);
+        this.add(B_Inscription, 1, 6);
+        this.add(panneau,1,7);
+       
+
+        
+        
+        
         //PARTIE CONNEXION
         //création des labels et champs de saisie
         Label titre2 = new Label("Connexion");
