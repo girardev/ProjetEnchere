@@ -7,11 +7,13 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetparMotCle;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -31,7 +33,7 @@ import javafx.scene.layout.GridPane;
  * @author valen
  */
 public class Accueil extends GridPane {
-    public Accueil(){
+    public Accueil(Connection con){
         
         Label titre = new Label("LeMauvaisCoin");
         titre.setStyle("-fx-max-width: 100");
@@ -42,9 +44,19 @@ public class Accueil extends GridPane {
         Label Lcategorie = new Label("Catégories");
         Label panneau = new Label();
         
+        //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
-        listeCategorie.getItems().setAll("Alcool","Mode");
+        ArrayList<String> categories = new ArrayList<String>();
+        try {
+            categories = getCategories(con);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            }       
+        listeCategorie.getItems().setAll(categories);
 
+        
+        //AJOUT DES COMPOSANTS AU GRIDPANE
         this.add(titre, 1, 0);
         this.add(Lrecherche,0,1);
         this.add(Frecherche,1,1);

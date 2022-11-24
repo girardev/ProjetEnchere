@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -397,6 +398,38 @@ public class GestionBdD {
             // chaque ordre SQL
             con.setAutoCommit(true);
         } 
+    }
+    
+    public static ArrayList getCategories(Connection con)
+            throws SQLException{
+        ResultSet resultat;
+        ArrayList<String> listeCategories = new ArrayList<String>();
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des categories ;
+                    select * from categorie
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+                listeCategories.add(resultat.getString("nom"));
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return listeCategories;
     }
     
     public static void creeCategorie(Connection con,String nom)

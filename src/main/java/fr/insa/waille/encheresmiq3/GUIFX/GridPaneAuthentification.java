@@ -26,7 +26,7 @@ import javafx.stage.Stage;
  */    
 public class GridPaneAuthentification extends GridPane {
 
-    public GridPaneAuthentification(Stage stage){
+    public GridPaneAuthentification(Stage stage,Connection con){
         //PARTIE INSCRIPTION
         //création des labels et champs de saisie
         Label titre = new Label("Inscription");
@@ -69,15 +69,6 @@ public class GridPaneAuthentification extends GridPane {
             String email = Femail.getText();
             String codepostal = Fcodepostal.getText();
             
-            //initialisation de Connection con
-            Connection con = null;
-            try {
-                con = defautConnect();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
             //utilisation de la fonction creeUtilisateur
             try {
@@ -126,15 +117,6 @@ public class GridPaneAuthentification extends GridPane {
             String pass2 = Fpass2.getText();
             String email2 = Femail2.getText();
             
-            //initialisation de Connection con
-            Connection con = null;
-            try {
-                con = defautConnect();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
             
             //utilisation recherche du mot de passe d'un email
             try(Statement st1 = con.createStatement()){
@@ -150,7 +132,7 @@ public class GridPaneAuthentification extends GridPane {
                     Fpass2.setText("");
                     panneau2.setText("Connexion possible");
                     
-                    Scene sc2 = new Scene(new Accueil());
+                    Scene sc2 = new Scene(new Accueil(con));
                     //Scene sc = new Scene(new TestF));
                     stage.setScene(sc2);
                 }
