@@ -14,11 +14,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -62,22 +67,56 @@ public class Accueil extends GridPane {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            String message=null;
+            
             try {
                 Statement st = con.createStatement();
                 String query ="select * from objet where titre like '%"+motcle+"%' or description like '%"+motcle+"%'";
                 ResultSet resultat2 = st.executeQuery(query);
+                
+                
+                TableView table = new TableView();
+                ObservableList<Objet> donnee=null;
                 while(resultat2.next()){
                     String titreobj = resultat2.getString("titre");
-                    String description = resultat2.getString("description");
-                    String debut = resultat2.getString("debut");
-                    String fin = resultat2.getString("fin");              
+                    String descriptionobj = resultat2.getString("description");            
                     String prix_base = resultat2.getString("prix_base");
-                    int propose_par = resultat2.getInt("propose_par");
-                    message= message+"\n"+titreobj+" "+description+" du "+debut+" jusqu'à "+fin+" pour "+prix_base+" proposé par"+propose_par;
-                    panneau.setText(message);
-                    Frecherche.setText("");
-            }
+                    donnee = FXCollections.observableArrayList(
+                    new Objet(titreobj, descriptionobj, prix_base));
+                    }
+                
+                
+                table.setItems(donnee);
+                
+                table.setEditable(true);
+                TableColumn coltitre = new TableColumn("Titre");
+                TableColumn coldescription = new TableColumn("Description");
+                TableColumn colprix = new TableColumn("Prix");
+
+                coltitre.setMinWidth(99);
+                coldescription.setMinWidth(99);
+                colprix.setMinWidth(99);
+
+                coltitre.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("titre"));
+
+                coldescription.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("description"));
+
+                colprix.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("prix"));
+                
+                
+
+                table.getColumns().addAll(coltitre, coldescription, colprix);
+                
+                this.add(table, 0, 5);
+                
+                
+
+                
+                Frecherche.setText("");
+                
+                
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
