@@ -9,6 +9,8 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetparMotCle;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,6 +28,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -33,8 +37,9 @@ import javafx.scene.layout.GridPane;
  * @author valen
  */
 public class Accueil extends GridPane {
-    public Accueil(Connection con){
+    public Accueil(Connection con) throws FileNotFoundException{
         
+        Label logo = recupererLogo();
         Label titre = new Label("LeMauvaisCoin");
         titre.setStyle("-fx-max-width: 100");
         titre.setStyle("-fx-font-weight: bold");
@@ -57,7 +62,7 @@ public class Accueil extends GridPane {
 
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(titre, 1, 0);
+        this.add(logo, 0, 0);
         this.add(Lrecherche,0,1);
         this.add(Frecherche,1,1);
         this.add(Brecherche,2,1);
@@ -65,79 +70,83 @@ public class Accueil extends GridPane {
         this.add(listeCategorie,1,2);
         this.add(panneau,0,4);
         
-//        //action de l'appuie sur le bouton connexion
 //        Brecherche.setOnAction((t) ->{
-//            String motcle = Frecherche.getText();
-//            
-//            //initialisation de Connection con
-//            Connection con = null;
-//            try {
-//                con = defautConnect();
-//            } catch (ClassNotFoundException ex) {
-//                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-//            } catch (SQLException ex) {
-//                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//            
-//            
-//            try {
-//                Statement st = con.createStatement();
-//                String query ="select * from objet where titre like '%"+motcle+"%' or description like '%"+motcle+"%'";
-//                ResultSet resultat2 = st.executeQuery(query);
-//                
-//                
-//                TableView table = new TableView();
-//                ObservableList<Objet> donnee=null;
-//                while(resultat2.next()){
-//                    String titreobj = resultat2.getString("titre");
-//                    String descriptionobj = resultat2.getString("description");            
-//                    String prix_base = resultat2.getString("prix_base");
-//                    donnee = FXCollections.observableArrayList(
-//                    new Objet(titreobj, descriptionobj, prix_base));
-//                    }
-//                
-//                
-//                table.setItems(donnee);
-//                
-//                table.setEditable(true);
-//                TableColumn coltitre = new TableColumn("Titre");
-//                TableColumn coldescription = new TableColumn("Description");
-//                TableColumn colprix = new TableColumn("Prix");
+//            String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
+//            System.out.println("categorie : "+categorie);
 //
-//                coltitre.setMinWidth(99);
-//                coldescription.setMinWidth(99);
-//                colprix.setMinWidth(99);
-//
-//                coltitre.setCellValueFactory(
-//                        new PropertyValueFactory<Objet, String>("titre"));
-//
-//                coldescription.setCellValueFactory(
-//                        new PropertyValueFactory<Objet, String>("description"));
-//
-//                colprix.setCellValueFactory(
-//                        new PropertyValueFactory<Objet, String>("prix"));
-//                
-//                
-//
-//                table.getColumns().addAll(coltitre, coldescription, colprix);
-//                
-//                this.add(table, 0, 5);
-//                
-//                
-//
-//                
-//                Frecherche.setText("");
-//                
-//                
-//            } catch (SQLException ex) {
-//                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//              
 //        });
-//        
+        
+        //action de l'appuie sur le bouton connexion
+        Brecherche.setOnAction((t) ->{
+            String motcle = Frecherche.getText(); 
+            try {
+                Statement st = con.createStatement();
+                String query ="select * from objet where titre like '%"+motcle+"%' or description like '%"+motcle+"%'";
+                ResultSet resultat2 = st.executeQuery(query);
+  
+                TableView table = new TableView();
+                ObservableList<Objet> donnee=null;
+                while(resultat2.next()){
+                    String titreobj = resultat2.getString("titre");
+                    String descriptionobj = resultat2.getString("description");            
+                    String prix_base = resultat2.getString("prix_base");
+                    donnee = FXCollections.observableArrayList(
+                    new Objet(titreobj, descriptionobj, prix_base));
+                    }
+                
+                
+                table.setItems(donnee);
+                
+                table.setEditable(true);
+                TableColumn coltitre = new TableColumn("Titre");
+                TableColumn coldescription = new TableColumn("Description");
+                TableColumn colprix = new TableColumn("Prix");
+
+                coltitre.setMinWidth(99);
+                coldescription.setMinWidth(99);
+                colprix.setMinWidth(99);
+
+                coltitre.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("titre"));
+
+                coldescription.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("description"));
+
+                colprix.setCellValueFactory(
+                        new PropertyValueFactory<Objet, String>("prix"));
+                
+                
+
+                table.getColumns().addAll(coltitre, coldescription, colprix);
+                
+                this.add(table, 0, 5);
+                
+                
+
+                
+                Frecherche.setText("");
+                
+                
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+              
+        });
         
         
-        
+                
+    }
+    
+    
+    //récupère le logo du site et l'enregistre dans un label pour être affiché par la suite
+    public static Label recupererLogo() throws FileNotFoundException{
+        FileInputStream image = new FileInputStream("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\logo_lemauvaiscoin.png");
+        Image i = new Image(image);
+        ImageView imageView = new ImageView(i);
+        imageView.setFitHeight(75);
+        imageView.setFitWidth(185);
+        Label logo = new Label("",imageView);
+        return logo;
     }
     
 }

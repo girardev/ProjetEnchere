@@ -5,6 +5,7 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -141,6 +142,8 @@ public class GridPaneAuthentification extends GridPane {
                 }
             
             } catch (SQLException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (FileNotFoundException ex) {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
