@@ -53,76 +53,76 @@ public class Accueil extends GridPane {
         this.add(listeCategorie,1,2);
         this.add(panneau,0,4);
         
-        //action de l'appuie sur le bouton connexion
-        Brecherche.setOnAction((t) ->{
-            String motcle = Frecherche.getText();
-            
-            //initialisation de Connection con
-            Connection con = null;
-            try {
-                con = defautConnect();
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            
-            try {
-                Statement st = con.createStatement();
-                String query ="select * from objet where titre like '%"+motcle+"%' or description like '%"+motcle+"%'";
-                ResultSet resultat2 = st.executeQuery(query);
-                
-                
-                TableView table = new TableView();
-                ObservableList<Objet> donnee=null;
-                while(resultat2.next()){
-                    String titreobj = resultat2.getString("titre");
-                    String descriptionobj = resultat2.getString("description");            
-                    String prix_base = resultat2.getString("prix_base");
-                    donnee = FXCollections.observableArrayList(
-                    new Objet(titreobj, descriptionobj, prix_base));
-                    }
-                
-                
-                table.setItems(donnee);
-                
-                table.setEditable(true);
-                TableColumn coltitre = new TableColumn("Titre");
-                TableColumn coldescription = new TableColumn("Description");
-                TableColumn colprix = new TableColumn("Prix");
-
-                coltitre.setMinWidth(99);
-                coldescription.setMinWidth(99);
-                colprix.setMinWidth(99);
-
-                coltitre.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("titre"));
-
-                coldescription.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("description"));
-
-                colprix.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("prix"));
-                
-                
-
-                table.getColumns().addAll(coltitre, coldescription, colprix);
-                
-                this.add(table, 0, 5);
-                
-                
-
-                
-                Frecherche.setText("");
-                
-                
-            } catch (SQLException ex) {
-                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-            }
-              
-        });
-        
+//        //action de l'appuie sur le bouton connexion
+//        Brecherche.setOnAction((t) ->{
+//            String motcle = Frecherche.getText();
+//            
+//            //initialisation de Connection con
+//            Connection con = null;
+//            try {
+//                con = defautConnect();
+//            } catch (ClassNotFoundException ex) {
+//                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (SQLException ex) {
+//                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//            
+//            
+//            try {
+//                Statement st = con.createStatement();
+//                String query ="select * from objet where titre like '%"+motcle+"%' or description like '%"+motcle+"%'";
+//                ResultSet resultat2 = st.executeQuery(query);
+//                
+//                
+//                TableView table = new TableView();
+//                ObservableList<Objet> donnee=null;
+//                while(resultat2.next()){
+//                    String titreobj = resultat2.getString("titre");
+//                    String descriptionobj = resultat2.getString("description");            
+//                    String prix_base = resultat2.getString("prix_base");
+//                    donnee = FXCollections.observableArrayList(
+//                    new Objet(titreobj, descriptionobj, prix_base));
+//                    }
+//                
+//                
+//                table.setItems(donnee);
+//                
+//                table.setEditable(true);
+//                TableColumn coltitre = new TableColumn("Titre");
+//                TableColumn coldescription = new TableColumn("Description");
+//                TableColumn colprix = new TableColumn("Prix");
+//
+//                coltitre.setMinWidth(99);
+//                coldescription.setMinWidth(99);
+//                colprix.setMinWidth(99);
+//
+//                coltitre.setCellValueFactory(
+//                        new PropertyValueFactory<Objet, String>("titre"));
+//
+//                coldescription.setCellValueFactory(
+//                        new PropertyValueFactory<Objet, String>("description"));
+//
+//                colprix.setCellValueFactory(
+//                        new PropertyValueFactory<Objet, String>("prix"));
+//                
+//                
+//
+//                table.getColumns().addAll(coltitre, coldescription, colprix);
+//                
+//                this.add(table, 0, 5);
+//                
+//                
+//
+//                
+//                Frecherche.setText("");
+//                
+//                
+//            } catch (SQLException ex) {
+//                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//              
+//        });
+//        
         
         
         
