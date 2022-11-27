@@ -4,6 +4,7 @@
  */
 package fr.insa.waille.encheresmiq3.bdd;
 
+import fr.insa.encheresmiq3.modele.Objet;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +14,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  * test git
@@ -432,6 +435,7 @@ public class GestionBdD {
         return listeCategories;
     }
     
+    
     public static void creeCategorie(Connection con,String nom)
             throws SQLException {
         con.setAutoCommit(false);
@@ -451,7 +455,44 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
     }
-
+    
+    public static ArrayList getObjets(Connection con)
+            throws SQLException{
+        ResultSet resultat;
+        ArrayList<Objet> listeObjets = new ArrayList<Objet>();
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des objets ;
+                    select * from objet
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+                int id = resultat.getInt("id");
+                String titre = resultat.getString("titre");
+                String description = resultat.getString("description");
+                String categorie = resultat.getString("categorie");
+                int prix_base = resultat.getInt("prix_base");        
+                listeObjets.add(new Objet(id,titre,description,categorie,prix_base));
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return listeObjets;
+    }
+    
     public static void demandeCategorie(Connection con)
             throws SQLException {
             System.out.println("nom categorie :");
@@ -496,11 +537,12 @@ public class GestionBdD {
         }
     }
     
-    public static void rechercheObjetParCategorie(Connection con,int id_categorie)
+    public static ObservableList rechercheObjetParCategorie(Connection con,String categorie)
             throws SQLException{
         con.setAutoCommit(false);
+        ObservableList<Objet> listeObj = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
-            String query = "select objet.id, titre, description, debut, fin, categorie, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = "+id_categorie+" ";
+            String query = "select objet.id, titre, description, debut, fin, categorie, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = (select id from categorie where nom like '%"+categorie+"%' )";
 
             ResultSet resultats = st.executeQuery(query);
             System.out.println("Liste des objets :");
@@ -511,10 +553,12 @@ public class GestionBdD {
                 String description = resultats.getString("description");
                 String debut = resultats.getString("debut");
                 String fin = resultats.getString("fin");              
-                String prix_base = resultats.getString("prix_base");
+                int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
+                listeObj.add(new Objet(id,titre,description,prix_base));
             }
+            return listeObj;
         }
         catch (SQLException ex) {
             // quelque chose s'est mal passé
@@ -531,9 +575,11 @@ public class GestionBdD {
     }
     
     
-    public static void rechercheObjetparMotCle(Connection con, String motCle)
+    public static ObservableList rechercheObjetParMotCle(Connection con, String motCle)
             throws SQLException{
         con.setAutoCommit(false);
+        //initialisation de la liste
+        ObservableList<Objet> listeObjets = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
             //concaténation pour former la requête SQL voulue :
             String query ="select * from objet where titre like '%"+motCle+"%' or description like '%"+motCle+"%'";
@@ -546,10 +592,11 @@ public class GestionBdD {
                 String description = resultats.getString("description");
                 String debut = resultats.getString("debut");
                 String fin = resultats.getString("fin");              
-                String prix_base = resultats.getString("prix_base");
-                int categorie = resultats.getInt("categorie");
+                int prix_base = resultats.getInt("prix_base");
+                String categorie = resultats.getString("categorie");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
+                listeObjets.add(new Objet(id,titre,description,categorie,prix_base));
             }
         }
         catch (SQLException ex) {
@@ -564,6 +611,7 @@ public class GestionBdD {
             // chaque ordre SQL
             con.setAutoCommit(true);
         }
+        return listeObjets;
     }
 
     public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par)
@@ -854,15 +902,15 @@ public class GestionBdD {
                         deleteAllCategories(con);
                         System.out.println("categories supprimées OK");
                         break;
-                    case 15 :
-                        System.out.println(" Rentrer l'identifiant de la categorie recherchée");
-                        int id = Lire.i();
-                        rechercheObjetParCategorie(con,id);
-                        break;
+//                    case 15 :
+//                        System.out.println(" Rentrer l'identifiant de la categorie recherchée");
+//                        int id = Lire.i();
+//                        rechercheObjetParCategorie(con,id);
+//                        break;
                     case 16 :
                         System.out.println(" Rentrer le mot clé de l'objet recherché");
                         String motclé = Lire.S();
-                        rechercheObjetparMotCle(con,motclé); 
+                        rechercheObjetParMotCle(con,motclé); 
                     case 99 :
                         stop = true;
                         System.out.println("Vous avez quitté le menu");
