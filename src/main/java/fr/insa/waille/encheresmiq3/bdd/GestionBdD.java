@@ -38,7 +38,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
     }
     
     public static void creeSchema(Connection con)
@@ -93,6 +93,17 @@ public class GestionBdD {
                        nom varchar(50) not null
                     )
                     """);
+            st.executeUpdate(
+                   """
+                    create table UtilisateurEnCours (
+                       id integer not null primary key
+                       generated always as identity,
+                       email varchar(50) not null,
+                       pass varchar(30) not null,
+                       role integer not null
+                    )
+                    """);
+            
             // je defini les liens entre les clés externes et les clés primaires
             // correspondantes
             st.executeUpdate(
@@ -224,6 +235,15 @@ public class GestionBdD {
             } catch (SQLException ex) {
                 // nothing to do : maybe the table was not created
             }
+            try {
+                st.executeUpdate(
+                        """
+                    drop table UtilisateurEnCours
+                    """);
+                System.out.println("table UtilisateurEnCours dropped");
+            } catch (SQLException ex) {
+                // nothing to do : maybe the table was not created
+            }
         }
     }
     
@@ -300,6 +320,60 @@ public class GestionBdD {
             creeUtilisateur(con,nom,prenom,pass,email,code_postal);
             
     }
+
+    public static void creeUtilisateurEnCours(Connection con,String email,String pass,int role)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        """
+                    insert into UtilisateurEnCours (email, pass, role)
+                    values (?, ?, ?)
+                    """)) {
+            pst.setString(1, email);
+            pst.setString(2, pass);
+            pst.setInt(3, role);
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+
+    public static int getRole(Connection con)
+            throws SQLException{
+        ResultSet resultat;
+        int role = 0;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des categories ;
+                    select role from UtilisateurEnCours
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+                role = resultat.getInt("role");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return role;
+    }    
     
     public static void afficheEncheres(Connection con)
                 throws SQLException{
