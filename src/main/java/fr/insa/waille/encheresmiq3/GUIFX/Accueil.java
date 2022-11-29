@@ -34,13 +34,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 /**
  *
  * @author valen
  */
 public class Accueil extends GridPane {
-    public Accueil(Connection con) throws FileNotFoundException{
+    
+    public Accueil(Stage stage, Connection con) throws FileNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
@@ -53,7 +55,7 @@ public class Accueil extends GridPane {
         Label Lcategorie = new Label("Catégories");
         Button Bcategorie = new Button("Par catégorie");
         Label panneau = new Label();
-        Label essai = new Label("Essai");
+        Button Bcreercat = new Button("Créer catégorie");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -84,7 +86,7 @@ public class Accueil extends GridPane {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }
         if(role==1){
-            this.add(essai,3,1);
+            this.add(Bcreercat,3,1);
         }
         
         //action de l'appui sur le bouton recherche par catégorie
@@ -115,8 +117,21 @@ public class Accueil extends GridPane {
             }
             this.affichageResultats(con, listeObj);
             Frecherche.setText("");          
-    });
-        
+        });
+    
+        //action de l'appui sur le bouton créer catégorie
+        Bcreercat.setOnAction((t) ->{
+            
+                
+            try {
+                Scene sc3 = new Scene(new CreerCat(stage,con));
+                stage.setScene(sc3);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+                
+        });
         
     }
     
