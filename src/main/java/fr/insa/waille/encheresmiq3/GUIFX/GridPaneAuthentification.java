@@ -144,8 +144,7 @@ public class GridPaneAuthentification extends GridPane {
                         Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    Scene sc2 = new Scene(new Accueil(con));
-                    //Scene sc = new Scene(new TestF));
+                    Scene sc2 = new Scene(new Accueil(stage, con));
                     stage.setScene(sc2);
                 }
                 else{

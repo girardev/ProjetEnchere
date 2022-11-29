@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws SQLException {
         Connection con = null;
         try {
             con = defautConnect();
@@ -34,12 +34,7 @@ public class Main extends Application {
         } catch (SQLException ex) {
             Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        try {
-            creeSchemaDeBase(con);
-        } catch (SQLException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        creeSchemaDeBase(con);
         Scene sc = new Scene(new GridPaneAuthentification(stage,con));
         stage.setWidth(1000);
         stage.setHeight(600);
