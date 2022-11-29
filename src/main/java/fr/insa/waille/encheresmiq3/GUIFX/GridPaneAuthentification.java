@@ -4,6 +4,7 @@
  */
 package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
@@ -114,7 +115,7 @@ public class GridPaneAuthentification extends GridPane {
         
         
         //action de l'appuie sur le bouton connexion
-        B_Connexion.setOnAction((t) ->{
+        B_Connexion.setOnAction((var t) ->{
             String pass2 = Fpass2.getText();
             String email2 = Femail2.getText();
             
@@ -123,7 +124,7 @@ public class GridPaneAuthentification extends GridPane {
             try(Statement st1 = con.createStatement()){
                 String query1 = "select pass from utilisateur where email like '"+email2+"' ";
                 ResultSet resultat = st1.executeQuery(query1);
-                String motdepasse = null;
+                String motdepasse = "";
                 while(resultat.next()){
                 motdepasse = resultat.getString("pass");
                 }
@@ -131,7 +132,17 @@ public class GridPaneAuthentification extends GridPane {
                 if(motdepasse.equals(pass2)){          
                     Femail2.setText("");
                     Fpass2.setText("");
-                    panneau2.setText("Connexion possible");
+                    
+                    int role=0;
+                    if(email2.equals("gregory.waille@insa-strasbourg.fr")||email2.equals("arthur.varlet@insa-strasbourg.fr")||email2.equals("valentin.girardet1@insa-strasbourg.fr")){
+                        role=1;
+                    }
+                    
+                    try {
+                        creeUtilisateurEnCours(con,email2,pass2,role);
+                    } catch (SQLException ex) {
+                        Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                     
                     Scene sc2 = new Scene(new Accueil(con));
                     //Scene sc = new Scene(new TestF));
@@ -139,6 +150,8 @@ public class GridPaneAuthentification extends GridPane {
                 }
                 else{
                     panneau2.setText("Connexion impossible");
+                    Femail2.setText("");
+                    Fpass2.setText("");                    
                 }
             
             } catch (SQLException ex) {

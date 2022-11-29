@@ -5,6 +5,7 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeSchemaDeBase;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,6 +35,11 @@ public class Main extends Application {
             Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        try {
+            creeSchemaDeBase(con);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         Scene sc = new Scene(new GridPaneAuthentification(stage,con));
         stage.setWidth(1000);
         stage.setHeight(600);

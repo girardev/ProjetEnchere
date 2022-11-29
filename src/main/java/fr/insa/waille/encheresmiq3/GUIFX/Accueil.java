@@ -9,6 +9,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRole;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
 import java.io.FileInputStream;
@@ -52,6 +53,7 @@ public class Accueil extends GridPane {
         Label Lcategorie = new Label("Catégories");
         Button Bcategorie = new Button("Par catégorie");
         Label panneau = new Label();
+        Label essai = new Label("Essai");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -75,6 +77,15 @@ public class Accueil extends GridPane {
         this.add(Bcategorie,2,2);
         this.add(panneau,0,4);
         
+        int role = 0;
+        try {
+            role = getRole(con);
+        } catch (SQLException ex) {
+            Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(role==1){
+            this.add(essai,3,1);
+        }
         
         //action de l'appui sur le bouton recherche par catégorie
         Bcategorie.setOnAction((t) ->{
