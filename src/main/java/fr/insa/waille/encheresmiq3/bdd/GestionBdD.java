@@ -351,7 +351,7 @@ public class GestionBdD {
         try(Statement st = con.createStatement()){
             resultat = st.executeQuery(
                     """
-                    ---ordre SQL pour récupérer la liste des categories ;
+                    ---ordre SQL pour récupérer la liste des roles ;
                     select role from UtilisateurEnCours
                     """
             );
