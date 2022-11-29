@@ -56,6 +56,7 @@ public class Accueil extends GridPane {
         Button Bcategorie = new Button("Par catégorie");
         Label panneau = new Label();
         Button Bcreercat = new Button("Créer catégorie");
+        Button Bcreerobj = new Button("Ajouter un objet");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -78,6 +79,7 @@ public class Accueil extends GridPane {
         this.add(listeCategorie,1,2);
         this.add(Bcategorie,2,2);
         this.add(panneau,0,4);
+        this.add(Bcreerobj,3,2);
         
         int role = 0;
         try {
@@ -126,6 +128,20 @@ public class Accueil extends GridPane {
             try {
                 Scene sc3 = new Scene(new CreerCat(stage,con));
                 stage.setScene(sc3);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+                
+        });
+        
+        //action de l'appui sur le bouton créer catégorie
+        Bcreerobj.setOnAction((t) ->{
+            
+                
+            try {
+                Scene sc4 = new Scene(new CreerObjet(stage,con));
+                stage.setScene(sc4);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
