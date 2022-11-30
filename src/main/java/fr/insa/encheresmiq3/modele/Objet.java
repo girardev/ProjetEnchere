@@ -14,25 +14,21 @@ public class Objet {
     private String description;
     private String debut;
     private String fin;
-    private String categorie;
+    private int categorie;
     private int prix_base;
     private int propose_par;
     
     //constructeurs
-    public Objet(int id){
-        this.id=id;
-    }
-    public Objet(int id, String titre, int prix_base){
-        this.id=id;
-        this.titre=titre;
-        this.prix_base=prix_base;
-    }
-    public Objet(int id, String titre, String description, String categorie, int prix_base){
+
+    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base, int propose_par){
         this.id=id;
         this.titre=titre;
         this.description=description;
+        this.debut=debut;
+        this.fin=fin;
         this.categorie=categorie;
         this.prix_base=prix_base;
+        this.propose_par=propose_par;
     }
 
     public Objet(int id, String titre, String description, int prix_base) {
@@ -66,7 +62,7 @@ public class Objet {
         return fin;
     }
 
-    public String getCategorie() {
+    public int getCategorie() {
         return categorie;
     }
 
@@ -98,7 +94,7 @@ public class Objet {
         this.fin = fin;
     }
 
-    public void setCategorie(String categorie) {
+    public void setCategorie(int categorie) {
         this.categorie = categorie;
     }
 

@@ -636,9 +636,12 @@ public class GestionBdD {
                 int id = resultat.getInt("id");
                 String titre = resultat.getString("titre");
                 String description = resultat.getString("description");
-                String categorie = resultat.getString("categorie");
-                int prix_base = resultat.getInt("prix_base");        
-                listeObjets.add(new Objet(id,titre,description,categorie,prix_base));
+                String debut = resultat.getString("debut");
+                String fin = resultat.getString("fin");
+                int categorie = resultat.getInt("categorie");
+                int prix_base = resultat.getInt("prix_base"); 
+                int propose_par = resultat.getInt("propose_par");
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,propose_par));
             }
         }
         catch (SQLException ex) {
@@ -700,7 +703,7 @@ public class GestionBdD {
         }
     }
     
-    public static ObservableList rechercheObjetParCategorie(Connection con,String categorie)
+    public static ObservableList rechercheObjetParCategorie(Connection con,int categorie)
             throws SQLException{
         con.setAutoCommit(false);
         ObservableList<Objet> listeObj = FXCollections.observableArrayList();
@@ -715,7 +718,7 @@ public class GestionBdD {
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
                 String debut = resultats.getString("debut");
-                String fin = resultats.getString("fin");              
+                String fin = resultats.getString("fin");
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
@@ -756,10 +759,10 @@ public class GestionBdD {
                 String debut = resultats.getString("debut");
                 String fin = resultats.getString("fin");              
                 int prix_base = resultats.getInt("prix_base");
-                String categorie = resultats.getString("categorie");
+                int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
-                listeObjets.add(new Objet(id,titre,description,categorie,prix_base));
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,propose_par));
             }
         }
         catch (SQLException ex) {

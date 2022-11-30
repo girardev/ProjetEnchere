@@ -67,6 +67,8 @@ public class CreerCat extends GridPane{
                 stage.setScene(sc2);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
             }
            
             

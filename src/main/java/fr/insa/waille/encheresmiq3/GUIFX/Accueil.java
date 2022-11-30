@@ -9,6 +9,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRole;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
@@ -42,7 +43,7 @@ import javafx.stage.Stage;
  */
 public class Accueil extends GridPane {
     
-    public Accueil(Stage stage, Connection con) throws FileNotFoundException{
+    public Accueil(Stage stage, Connection con) throws FileNotFoundException, SQLException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
@@ -57,6 +58,7 @@ public class Accueil extends GridPane {
         Label panneau = new Label();
         Button Bcreercat = new Button("Créer catégorie");
         Button Bcreerobj = new Button("Ajouter un objet");
+        Button Bvoirplus = new Button("Voir plus sur l'objet sélectionné");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -68,7 +70,34 @@ public class Accueil extends GridPane {
             Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }       
         listeCategorie.getItems().setAll(categories);
+        
+        ObservableList<Objet> listeAllObj = rechercheObjetParMotCle(con,"");
+        TableView<Objet> table = new TableView<Objet>();
+            //remplissage de la table avec les objets
+            table.setItems(listeAllObj);
+            
+            //configuration de la table
+            table.setEditable(true);
+            
+            //création des colonnes du tableau
+            TableColumn coltitre = new TableColumn("Titre");
+            TableColumn coldescription = new TableColumn("Description");
+            TableColumn colprix = new TableColumn("Prix");
+            coltitre.setMinWidth(200);
+            coldescription.setMinWidth(200);
+            colprix.setMinWidth(200);
+            coltitre.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("titre"));
 
+            coldescription.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("description"));
+
+            colprix.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("prix_base"));
+
+            table.getColumns().setAll(coltitre, coldescription, colprix);
+            
+            
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
         this.add(logo, 0, 0);
@@ -80,6 +109,9 @@ public class Accueil extends GridPane {
         this.add(Bcategorie,2,2);
         this.add(panneau,0,4);
         this.add(Bcreerobj,3,2);
+        //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
+        this.add(table, 0, 5,4,1);  
+        this.add(Bvoirplus,3,3);
         
         int role = 0;
         try {
@@ -91,33 +123,59 @@ public class Accueil extends GridPane {
             this.add(Bcreercat,3,1);
         }
         
+        Bvoirplus.setOnAction((t) ->{
+            
+            Objet objSelect =  table.getSelectionModel().selectedItemProperty().get();
+            
+            Stage stage2 = new Stage();
+            Scene sc2 = null;
+            try {
+                sc2 = new Scene(new ObjetPlus(stage2,con,objSelect));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stage2.setWidth(1000);
+            stage2.setHeight(600);
+            stage2.setScene(sc2);
+            stage2.setTitle("Encheres");
+            stage2.show();
+            
+        });
+        
+        
         //action de l'appui sur le bouton recherche par catégorie
         Bcategorie.setOnAction((t) ->{
             //recupere la catégorie sélectionnée par l'utilisateur
             String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
-            ObservableList<Objet> listeObj = null;
+            int idcat = 0;
             try {
-                //recupère la liste des objets de cette catégorie :
-                listeObj = rechercheObjetParCategorie(con,categorie);
+                idcat = getIdCategorie(con,categorie);
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
-            this.affichageResultats(con, listeObj);
-            Frecherche.setText("");        
+            ObservableList<Objet> listeObjet = null;
+            try {
+                //recupère la liste des objets de cette catégorie :
+                listeObjet = rechercheObjetParCategorie(con,idcat);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.affichageResultats(con, listeObjet);
+            System.out.println(idcat);     
         });
         
         //action de l'appui sur le bouton recherche
         Brecherche.setOnAction((t) ->{
             //recupere le mot clé saisi par l'utilisateur
             String motcle = Frecherche.getText(); 
-            ObservableList<Objet> listeObj = null;
+            ObservableList<Objet> listeObjet = null;
             try {
                 //recupère la liste des objets :
-                listeObj = rechercheObjetParMotCle(con,motcle);
+                listeObjet = rechercheObjetParMotCle(con,motcle);
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
-            this.affichageResultats(con, listeObj);
+            this.affichageResultats(con, listeObjet);
             Frecherche.setText("");          
         });
     
@@ -164,11 +222,11 @@ public class Accueil extends GridPane {
     }
     
     //affiche la liste des objets sélectionnés dans une TableView :
-    public void affichageResultats(Connection con, ObservableList<Objet> listeObj){
+    public void affichageResultats(Connection con, ObservableList<Objet> listeObjet){
                     
             TableView<Objet> table = new TableView<Objet>();
             //remplissage de la table avec les objets
-            table.setItems(listeObj);
+            table.setItems(listeObjet);
             
             //configuration de la table
             table.setEditable(true);
@@ -195,4 +253,6 @@ public class Accueil extends GridPane {
             //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
             this.add(table, 0, 5,4,1);                  
     }
+    
+    
 }
