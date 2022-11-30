@@ -722,7 +722,7 @@ public class GestionBdD {
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
-                listeObj.add(new Objet(id,titre,description,prix_base));
+                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base, propose_par));
             }
             return listeObj;
         }
