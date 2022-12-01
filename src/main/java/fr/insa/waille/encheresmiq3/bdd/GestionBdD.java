@@ -528,6 +528,35 @@ public class GestionBdD {
      }
     }
     
+    public static int getPrixMaxSurObjet(Connection con, int idObj)
+            throws SQLException{
+        ResultSet resultat;
+        int prixmax = 0;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select MAX(montant) from enchere where sur="+idObj+" "
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                prixmax=resultat.getInt(1);
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return prixmax;
+    }
+    
     public static void demandeEnchere(Connection con)
                 throws SQLException {
             System.out.println("quand :");
@@ -541,6 +570,8 @@ public class GestionBdD {
             creeEnchere(con, quand, montant, de, sur);
             
     }
+    
+    
     
     public static void afficheCategorie(Connection con)
             throws SQLException{

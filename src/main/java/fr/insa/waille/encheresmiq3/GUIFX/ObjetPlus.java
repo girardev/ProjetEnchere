@@ -11,8 +11,10 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getUtilisateur;
 import java.io.FileNotFoundException;
+import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -119,18 +121,33 @@ public class ObjetPlus extends GridPane{
             Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        int idObj = obj.getId();
-        
         try {
-            creeEnchere(con, quand, nouvprix, idUser, idObj);
+            if(nouvprix<max(obj.getPrix_base(),getPrixMaxSurObjet(con,obj.getId()) ) ){
+                panneau.setText("Le nouveau prix doit être plus grand que "+max(obj.getPrix_base(),getPrixMaxSurObjet(con,obj.getId()))+"€");
+                TnouvPrix.setText("");
+            }
+            else{
+                int idObj = obj.getId();
+                
+                try {
+                    creeEnchere(con, quand, nouvprix, idUser, idObj);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                panneau.setText("Proposition d'enchère effectuée");
+                TnouvPrix.setText("");
+                this.getChildren().remove(Bencherir);
+                this.getChildren().remove(TnouvPrix);
+                try {
+                    System.out.println(getPrixMaxSurObjet(con, obj.getId()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         } catch (SQLException ex) {
             Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        panneau.setText("Proposition d'enchère effectuée");
-        TnouvPrix.setText("");
-        this.getChildren().remove(Bencherir);
-        this.getChildren().remove(TnouvPrix);
     });
     
     
