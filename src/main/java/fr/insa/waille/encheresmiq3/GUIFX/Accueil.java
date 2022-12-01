@@ -140,6 +140,8 @@ public class Accueil extends GridPane {
                 sc2 = new Scene(new ObjetPlus(stage2,con,objSelect));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage2.setWidth(1000);
             stage2.setHeight(600);

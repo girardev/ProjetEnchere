@@ -350,6 +350,40 @@ public class GestionBdD {
         return id;
     }
     
+    public static String getUtilisateur(Connection con,int id)
+            throws SQLException{
+        ResultSet resultat;
+        String nomprenom = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des categories ;
+                    select nom,prenom from utilisateur where id ="""+id+"""
+                                                               
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+               nomprenom = resultat.getString("nom");
+               nomprenom = nomprenom+" "+resultat.getString("prenom");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return nomprenom;
+    }
+    
     public static void creeUtilisateurEnCours(Connection con,String email,String pass,int role)
             throws SQLException {
         con.setAutoCommit(false);
@@ -568,6 +602,39 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
         return listeCategories;
+    }
+    
+    public static String getNomCategorie(Connection con,int id)
+            throws SQLException{
+        ResultSet resultat;
+        String nom = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des categories ;
+                    select nom from categorie where id ="""+id+"""
+                                                               
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+               nom = resultat.getString("nom");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return nom;
     }
     
     public static int getIdCategorie(Connection con, String nom)

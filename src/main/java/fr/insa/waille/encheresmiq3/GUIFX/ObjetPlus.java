@@ -6,10 +6,12 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getUtilisateur;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -19,7 +21,7 @@ import javafx.stage.Stage;
  */
 public class ObjetPlus extends GridPane{
 
-    public ObjetPlus(Stage stage, Connection con, Objet obj) throws FileNotFoundException{
+    public ObjetPlus(Stage stage, Connection con, Objet obj) throws FileNotFoundException, SQLException{
         
     Label logo = recupererLogo();
         
@@ -59,9 +61,9 @@ public class ObjetPlus extends GridPane{
     Label ShowFin = new Label(fin);
     String Sprix_base = Integer.toString(prix_base);
     Label ShowPrix_base = new Label(Sprix_base+" €");
-    String Scategorie = Integer.toString(categorie);
+    String Scategorie = getNomCategorie(con,categorie);
     Label ShowCategorie = new Label(Scategorie);
-    String Spropose_par = Integer.toString(propose_par);
+    String Spropose_par = getUtilisateur(con,propose_par);
     Label ShowPropose_par = new Label(Spropose_par);
     
     this.add(logo,0,0);

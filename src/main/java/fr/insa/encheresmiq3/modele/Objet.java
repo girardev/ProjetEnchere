@@ -62,6 +62,8 @@ public class Objet {
                 sc2 = new Scene(new ObjetPlus(stage2,con, (Objet) this));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage2.setWidth(1000);
             stage2.setHeight(600);
