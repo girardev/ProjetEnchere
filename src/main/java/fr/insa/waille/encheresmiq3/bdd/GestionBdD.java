@@ -1076,10 +1076,6 @@ public class GestionBdD {
             creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2, 1);
             creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2, 2);
             creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2, 3);
-            creeEnchere(con, "mercredi", 25, 1, 2);
-            creeEnchere(con, "mercredi", 60, 2, 6);
-            creeEnchere(con, "mercredi", 150, 3, 5);
-            creeEnchere(con, "mercredi", 15, 3, 7);
         }
     }
     
