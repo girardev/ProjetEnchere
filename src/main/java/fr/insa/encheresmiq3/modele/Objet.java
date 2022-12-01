@@ -4,6 +4,19 @@
  */
 package fr.insa.encheresmiq3.modele;
 
+import fr.insa.waille.encheresmiq3.GUIFX.Accueil;
+import fr.insa.waille.encheresmiq3.GUIFX.GridPaneAuthentification;
+import fr.insa.waille.encheresmiq3.GUIFX.ObjetPlus;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import java.io.FileNotFoundException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+
 /**
  *
  * @author arvar
@@ -17,6 +30,7 @@ public class Objet {
     private int categorie;
     private int prix_base;
     private int propose_par;
+    private Button Bvoirplus;
     
     //constructeurs
 
@@ -29,6 +43,34 @@ public class Objet {
         this.categorie=categorie;
         this.prix_base=prix_base;
         this.propose_par=propose_par;
+        this.Bvoirplus=new Button("Voir plus");
+        
+        //action de l'appui sur le bouton voir plus
+        Bvoirplus.setOnAction((t) ->{
+            Connection con = null;
+            try {
+                con = defautConnect();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            Stage stage2 = new Stage();
+            Scene sc2 = null;
+            try {
+                sc2 = new Scene(new ObjetPlus(stage2,con, (Objet) this));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stage2.setWidth(1000);
+            stage2.setHeight(600);
+            stage2.setScene(sc2);
+            stage2.setTitle("Encheres");
+            stage2.show();
+            
+        });
+        
     }
 
     public Objet(int id, String titre, String description, int prix_base) {
@@ -73,6 +115,10 @@ public class Objet {
     public int getPropose_par() {
         return propose_par;
     }
+    
+    public Button getBvoirplus() {
+        return Bvoirplus;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -105,5 +151,10 @@ public class Objet {
     public void setPropose_par(int propose_par) {
         this.propose_par = propose_par;
     }
+    
+    public void setBvoirplus(Button Bvoirplus) {
+        this.Bvoirplus = Bvoirplus;
+    }
+    
     
 }

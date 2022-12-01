@@ -708,7 +708,7 @@ public class GestionBdD {
         con.setAutoCommit(false);
         ObservableList<Objet> listeObj = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
-            String query = "select objet.id, titre, description, debut, fin, categorie, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = (select id from categorie where nom like '%"+categorie+"%' )";
+            String query = "select objet.id, titre, description, debut, fin, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = "+categorie+" ";
 
             ResultSet resultats = st.executeQuery(query);
             System.out.println("Liste des objets :");

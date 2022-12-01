@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 
 /**
- *
+ * 
  * @author arvar
  */    
 public class GridPaneAuthentification extends GridPane {

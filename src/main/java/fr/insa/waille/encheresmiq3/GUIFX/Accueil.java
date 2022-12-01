@@ -82,7 +82,8 @@ public class Accueil extends GridPane {
             //création des colonnes du tableau
             TableColumn coltitre = new TableColumn("Titre");
             TableColumn coldescription = new TableColumn("Description");
-            TableColumn colprix = new TableColumn("Prix");
+            TableColumn colprix = new TableColumn("Prix (en €)");
+            TableColumn colvoirplus = new TableColumn("Action");
             coltitre.setMinWidth(200);
             coldescription.setMinWidth(200);
             colprix.setMinWidth(200);
@@ -94,10 +95,17 @@ public class Accueil extends GridPane {
 
             colprix.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("prix_base"));
+            
+            colvoirplus.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("Bvoirplus"));
 
-            table.getColumns().setAll(coltitre, coldescription, colprix);
+            table.getColumns().setAll(coltitre, coldescription, colprix,colvoirplus);
             
+            table.setItems(listeAllObj);
+            //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
+            this.add(table, 0, 5,5,1); 
             
+           
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
         this.add(logo, 0, 0);
@@ -108,10 +116,7 @@ public class Accueil extends GridPane {
         this.add(listeCategorie,1,2);
         this.add(Bcategorie,2,2);
         this.add(panneau,0,4);
-        this.add(Bcreerobj,3,2);
-        //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
-        this.add(table, 0, 5,4,1);  
-        this.add(Bvoirplus,3,3);
+        this.add(Bcreerobj,3,2);  
         
         int role = 0;
         try {
@@ -123,9 +128,11 @@ public class Accueil extends GridPane {
             this.add(Bcreercat,3,1);
         }
         
+        
+        //action de l'appui sur le bouton voir plus
         Bvoirplus.setOnAction((t) ->{
             
-            Objet objSelect =  table.getSelectionModel().selectedItemProperty().get();
+            Objet objSelect = table.getSelectionModel().getSelectedItem() ;
             
             Stage stage2 = new Stage();
             Scene sc2 = null;
@@ -161,7 +168,8 @@ public class Accueil extends GridPane {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.affichageResultats(con, listeObjet);
-            System.out.println(idcat);     
+                
+            
         });
         
         //action de l'appui sur le bouton recherche
@@ -234,7 +242,8 @@ public class Accueil extends GridPane {
             //création des colonnes du tableau
             TableColumn coltitre = new TableColumn("Titre");
             TableColumn coldescription = new TableColumn("Description");
-            TableColumn colprix = new TableColumn("Prix");
+            TableColumn colprix = new TableColumn("Prix (en €)");
+            TableColumn colvoirplus = new TableColumn("Action");
             coltitre.setMinWidth(200);
             coldescription.setMinWidth(200);
             colprix.setMinWidth(200);
@@ -246,12 +255,15 @@ public class Accueil extends GridPane {
 
             colprix.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("prix_base"));
+            
+            colvoirplus.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("Bvoirplus"));
 
-            table.getColumns().setAll(coltitre, coldescription, colprix);
+            table.getColumns().setAll(coltitre, coldescription, colprix,colvoirplus);
             
-            
+            table.setItems(listeObjet);
             //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
-            this.add(table, 0, 5,4,1);                  
+            this.add(table, 0, 5,5,1);                  
     }
     
     
