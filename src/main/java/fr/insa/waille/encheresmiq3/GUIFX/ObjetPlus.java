@@ -6,12 +6,20 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeEnchere;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getUtilisateur;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -54,6 +62,10 @@ public class ObjetPlus extends GridPane{
     Label Lpropose_par = new Label("Proposé par : ");
     Lpropose_par.setStyle("-fx-max-width: 50");
     Lpropose_par.setStyle("-fx-font-weight: bold");
+    Button Bprop = new Button("Proposer une enchère");
+    Label panneau = new Label();
+    TextField TnouvPrix = new TextField();
+    Button Bencherir = new Button("Enchérir");
     
     Label ShowTitre = new Label(titre);
     Label ShowDescription = new Label(description);
@@ -81,7 +93,47 @@ public class ObjetPlus extends GridPane{
     this.add(ShowCategorie,1,8);
     this.add(Lpropose_par,0,9);
     this.add(ShowPropose_par,1,9);
+    this.add(Bprop,3,1);
+    this.add(panneau,3,2);
+    
+    //action de l'appuie sur le bouton enchere
+    Bprop.setOnAction((t) ->{
 
+        panneau.setText("Proposer un nouveau prix d'enchère");
+        this.add(TnouvPrix,3,3);
+        this.add(Bencherir,3,4);
+
+    });
+    
+    //action de l'appuie sur le bouton enchere
+    Bencherir.setOnAction((t) ->{
+
+        String quand = "aujourd'hui";
+        int nouvprix = Integer.parseInt(TnouvPrix.getText());
+        String email;
+        int idUser=0;
+        try {
+            email = getEmailUtilisateurEnCours(con);
+            idUser = getIdUtilisateur(con,email);
+        } catch (SQLException ex) {
+            Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        int idObj = obj.getId();
+        
+        try {
+            creeEnchere(con, quand, nouvprix, idUser, idObj);
+        } catch (SQLException ex) {
+            Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        panneau.setText("Proposition d'enchère effectuée");
+        TnouvPrix.setText("");
+        this.getChildren().remove(Bencherir);
+        this.getChildren().remove(TnouvPrix);
+    });
+    
+    
     
     }
 }

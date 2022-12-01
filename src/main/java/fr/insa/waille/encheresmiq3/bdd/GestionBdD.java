@@ -438,7 +438,7 @@ public class GestionBdD {
         return role;
     }    
     
-    public static String getEmail(Connection con)
+    public static String getEmailUtilisateurEnCours(Connection con)
             throws SQLException{
         ResultSet resultat;
         String email = null;
@@ -469,6 +469,7 @@ public class GestionBdD {
         }
         return email;
     }
+    
     
     public static void afficheEncheres(Connection con)
                 throws SQLException{

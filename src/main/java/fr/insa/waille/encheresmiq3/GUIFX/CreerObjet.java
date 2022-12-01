@@ -7,7 +7,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmail;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import java.io.FileNotFoundException;
@@ -101,7 +101,7 @@ public class CreerObjet extends GridPane{
             String email = null;
             
             try {
-                email = getEmail(con);
+                email = getEmailUtilisateurEnCours(con);
                 propose_par = getIdUtilisateur(con,email);
             } catch (SQLException ex) {
                 Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
