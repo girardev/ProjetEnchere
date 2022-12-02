@@ -5,8 +5,12 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.ModifierRoleUtilisateur;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.ModifierRoleUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getAllUsers;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateur;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -65,6 +69,28 @@ public class GererRole extends GridPane{
         this.add(Brole,0,4);
         this.add(Bretour,1,4);
         
+        
+        //action de l'appui sur le bouton retour
+        Brole.setOnAction((var t) ->{
+            
+            String email = (String) listeUsers.getSelectionModel().getSelectedItem();
+            String role = (String) listeRoles.getSelectionModel().getSelectedItem();
+            try {
+                ModifierRoleUtilisateur(con,email,role);
+            } catch (SQLException ex) {
+                Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                if (email.equals(getEmailUtilisateurEnCours(con))){
+                    ModifierRoleUtilisateurEnCours(con,email,role); 
+                }
+                    } catch (SQLException ex) {
+                Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            panneau.setText("Modification effectuée");
+            
+            
+        });
         
         //action de l'appui sur le bouton retour
         Bretour.setOnAction((var t) ->{
