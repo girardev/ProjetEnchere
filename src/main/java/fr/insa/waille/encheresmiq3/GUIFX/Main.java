@@ -35,7 +35,7 @@ public class Main extends Application {
         }
         creeSchemaDeBase(con);
         Scene sc = new Scene(new GridPaneAuthentification(stage,con));
-        stage.setWidth(1000);
+        stage.setWidth(700);
         stage.setHeight(600);
         stage.setScene(sc);
         stage.setTitle("Encheres");

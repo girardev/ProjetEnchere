@@ -5,7 +5,6 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeCategorie;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -14,7 +13,6 @@ import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -22,42 +20,20 @@ import javafx.stage.Stage;
  *
  * @author valen
  */
-public class CreerCat extends GridPane{
+public class MesEncheres extends GridPane{
 
-    public CreerCat(Stage stage, Connection con) throws FileNotFoundException{
+    public MesEncheres(Stage stage, Connection con) throws FileNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
-        Label Lnouvcat = new Label("Entrez le nom d'une nouvelle catégorie: ");
-        TextField Fnouvcat = new TextField();
-        Label panneau = new Label();
-        Button Bcreercat = new Button("Créer catégorie");
+        Label Lobj = new Label("Voici les enchères que vous avez proposés");
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
         this.add(logo, 1, 0);
-        this.add(Lnouvcat,0,1);
-        this.add(Fnouvcat,1,1);  
-        this.add(panneau,0,2);
-        this.add(Bcreercat,1,3);
-        this.add(Bretour,0,3);
+        this.add(Lobj,1,1);
+        this.add(Bretour,1,2);
         
-        //action de l'appui sur le bouton creerCat
-        Bcreercat.setOnAction((t) ->{
-            String nom = Fnouvcat.getText();
-            
-            
-            //utilisation de la fonction creeUtilisateur
-            try {
-                creeCategorie(con,nom);
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            Fnouvcat.setText("");
-            
-            panneau.setText("Création de la nouvelle catégorie effectuée");
-        });
         
         //action de l'appui sur le bouton retour
         Bretour.setOnAction((var t) ->{
@@ -75,5 +51,4 @@ public class CreerCat extends GridPane{
         });
         
     }
- 
 }

@@ -75,7 +75,7 @@ public class CreerObjet extends GridPane{
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 0, 0);
+        this.add(logo, 1, 0);
         this.add(Lajout,0,1);
         this.add(Ltitre,0,2);
         this.add(Ftitre,1,2);
@@ -91,8 +91,8 @@ public class CreerObjet extends GridPane{
         this.add(Fprix,1,6);
         this.add(listeCategorie,1,7);
         this.add(panneau,1,8);
-        this.add(Bcreerobj,2,1);
-        this.add(Bretour,2,2);
+        this.add(Bcreerobj,1,9);
+        this.add(Bretour,0,9);
         
         //action de l'appuie sur le bouton creer objet
         Bcreerobj.setOnAction((t) ->{
