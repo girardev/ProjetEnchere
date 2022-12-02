@@ -12,6 +12,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateur;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -101,6 +102,8 @@ public class GererRole extends GridPane{
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
             }
            
             

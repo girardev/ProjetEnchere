@@ -6,6 +6,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -45,6 +46,8 @@ public class MesEncheres extends GridPane{
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(MesEncheres.class.getName()).log(Level.SEVERE, null, ex);
             }
            
             
