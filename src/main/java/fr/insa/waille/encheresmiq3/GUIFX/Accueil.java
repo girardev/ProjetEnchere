@@ -15,6 +15,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCatego
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +44,7 @@ import javafx.stage.Stage;
  */
 public class Accueil extends GridPane {
     
-    public Accueil(Stage stage, Connection con) throws FileNotFoundException, SQLException{
+    public Accueil(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
@@ -146,6 +147,8 @@ public class Accueil extends GridPane {
                 listeObjet = rechercheObjetParCategorie(con,idcat);
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.affichageResultats(con, listeObjet);
                 
@@ -161,6 +164,8 @@ public class Accueil extends GridPane {
                 //recupère la liste des objets :
                 listeObjet = rechercheObjetParMotCle(con,motcle);
             } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.affichageResultats(con, listeObjet);
