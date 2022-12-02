@@ -6,6 +6,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateur;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -74,7 +75,7 @@ public class GridPaneAuthentification extends GridPane {
             
             //utilisation de la fonction creeUtilisateur
             try {
-                creeUtilisateur(con,nom,prenom,pass,email,codepostal);
+                creeUtilisateur(con,nom,prenom,pass,email,codepostal,"Lambda");
             } catch (SQLException ex) {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -133,10 +134,7 @@ public class GridPaneAuthentification extends GridPane {
                     Femail2.setText("");
                     Fpass2.setText("");
                     
-                    String role="Lambda";
-                    if(email2.equals("gregory.waille@insa-strasbourg.fr")||email2.equals("arthur.varlet@insa-strasbourg.fr")||email2.equals("valentin.girardet1@insa-strasbourg.fr")){
-                        role="Admin";
-                    }
+                    String role= getRoleUtilisateur(con,email2);
                     
                     try {
                         creeUtilisateurEnCours(con,email2,pass2,role);
