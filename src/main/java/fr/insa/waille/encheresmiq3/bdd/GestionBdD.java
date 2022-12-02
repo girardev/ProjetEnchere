@@ -58,6 +58,7 @@ public class GestionBdD {
                         pass varchar(30) not null,
                         email varchar(50) not null unique,
                         code_postal varchar(30) not null
+                        role varchar(50) not null;
                     )
                     """);
             st.executeUpdate(
@@ -100,7 +101,7 @@ public class GestionBdD {
                        generated always as identity,
                        email varchar(50) not null,
                        pass varchar(30) not null,
-                       role integer not null
+                       role varchar(50) not null
                     )
                     """);
             
@@ -282,19 +283,20 @@ public class GestionBdD {
         } 
     }
     
-    public static void creeUtilisateur(Connection con,String nom,String prenom,String pass,String email,String code_postal)
+    public static void creeUtilisateur(Connection con,String nom,String prenom,String pass,String email,String code_postal,String role)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
         """
-                    insert into utilisateur (nom, prenom, pass, email, code_postal)
-                    values (?, ?, ?, ?, ?)
+                    insert into utilisateur (nom, prenom, pass, email, code_postal, role)
+                    values (?, ?, ?, ?, ?, ?)
                     """)) {
             pst.setString(1, nom);
             pst.setString(2, prenom);
             pst.setString(3, pass);
             pst.setString(4, email);
             pst.setString(5,code_postal);
+            pst.setString(6, role);
             pst.executeUpdate();
             con.commit();
             con.setAutoCommit(true);
@@ -317,7 +319,9 @@ public class GestionBdD {
             String email = Lire.S();
             System.out.println("code_postal utilisateur :");
             String code_postal = Lire.S(); 
-            creeUtilisateur(con,nom,prenom,pass,email,code_postal);
+            System.out.println("role utilisateur :");
+            String role = Lire.S(); 
+            creeUtilisateur(con,nom,prenom,pass,email,code_postal,role);
             
     }
     
@@ -384,7 +388,39 @@ public class GestionBdD {
         return nomprenom;
     }
     
-    public static void creeUtilisateurEnCours(Connection con,String email,String pass,int role)
+    public static ArrayList getAllUsers(Connection con)
+            throws SQLException{
+        ResultSet resultat;
+        ArrayList<String> listeUsers = new ArrayList<String>();
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des categories ;
+                    select email from utilisateur
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+                listeUsers.add(resultat.getString("email"));
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return listeUsers;
+    }
+    
+    public static void creeUtilisateurEnCours(Connection con,String email,String pass,String role)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -394,7 +430,7 @@ public class GestionBdD {
                     """)) {
             pst.setString(1, email);
             pst.setString(2, pass);
-            pst.setInt(3, role);
+            pst.setString(3, role);
             pst.executeUpdate();
             con.commit();
             con.setAutoCommit(true);
@@ -406,10 +442,10 @@ public class GestionBdD {
         }
     }
 
-    public static int getRole(Connection con)
+    public static String getRole(Connection con)
             throws SQLException{
         ResultSet resultat;
-        int role = 0;
+        String role = null;
         con.setAutoCommit(false);
         try(Statement st = con.createStatement()){
             resultat = st.executeQuery(
@@ -420,7 +456,7 @@ public class GestionBdD {
             );
             //sauvegarde les résultats
             while(resultat.next()){
-                role = resultat.getInt("role");
+                role = resultat.getString("role");
             }
         }
         catch (SQLException ex) {
@@ -1061,9 +1097,9 @@ public class GestionBdD {
             con.setAutoCommit(false);{
             deleteSchema(con);
             creeSchema(con);
-            creeUtilisateur(con, "waille", "gregory", "0000", "gregory.waille@insa-strasbourg.fr", "69680" );
-            creeUtilisateur(con, "varlet", "arthur", "azerty", "arthur.varlet@insa-strasbourg.fr", "37550" );
-            creeUtilisateur(con, "girardet", "valentin", "pass", "valentin.girardet1@insa-strasbourg.fr", "38080" );
+            creeUtilisateur(con, "waille", "gregory", "0000", "gregory.waille@insa-strasbourg.fr", "69680" ,"Admin");
+            creeUtilisateur(con, "varlet", "arthur", "azerty", "arthur.varlet@insa-strasbourg.fr", "37550","Admin" );
+            creeUtilisateur(con, "girardet", "valentin", "pass", "valentin.girardet1@insa-strasbourg.fr", "38080","Admin" );
             creeCategorie(con, "meubles");
             creeCategorie(con, "habits");
             creeCategorie(con, "alcools");
