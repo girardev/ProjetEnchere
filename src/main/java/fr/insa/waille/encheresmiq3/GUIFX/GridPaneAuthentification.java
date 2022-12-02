@@ -133,9 +133,9 @@ public class GridPaneAuthentification extends GridPane {
                     Femail2.setText("");
                     Fpass2.setText("");
                     
-                    int role=0;
+                    String role="Lambda";
                     if(email2.equals("gregory.waille@insa-strasbourg.fr")||email2.equals("arthur.varlet@insa-strasbourg.fr")||email2.equals("valentin.girardet1@insa-strasbourg.fr")){
-                        role=1;
+                        role="Admin";
                     }
                     
                     try {

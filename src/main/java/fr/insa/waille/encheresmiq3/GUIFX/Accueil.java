@@ -59,6 +59,7 @@ public class Accueil extends GridPane {
         Button Bcreercat = new Button("Créer catégorie");
         Button Bcreerobj = new Button("Ajouter un objet");
         Button Bvoirplus = new Button("Voir plus sur l'objet sélectionné");
+        Button Badmin = new Button("Gérer les rôles");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -118,39 +119,16 @@ public class Accueil extends GridPane {
         this.add(panneau,0,4);
         this.add(Bcreerobj,3,2);  
         
-        int role = 0;
+        String role = null;
         try {
             role = getRole(con);
         } catch (SQLException ex) {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(role==1){
+        if(role.equals("Admin")){
             this.add(Bcreercat,3,1);
+            this.add(Badmin,4,1);
         }
-        
-        
-        //action de l'appui sur le bouton voir plus
-        Bvoirplus.setOnAction((t) ->{
-            
-            Objet objSelect = table.getSelectionModel().getSelectedItem() ;
-            
-            Stage stage2 = new Stage();
-            Scene sc2 = null;
-            try {
-                sc2 = new Scene(new ObjetPlus(stage2,con,objSelect));
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (SQLException ex) {
-                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            stage2.setWidth(1000);
-            stage2.setHeight(600);
-            stage2.setScene(sc2);
-            stage2.setTitle("Encheres");
-            stage2.show();
-            
-        });
-        
         
         //action de l'appui sur le bouton recherche par catégorie
         Bcategorie.setOnAction((t) ->{
@@ -204,6 +182,20 @@ public class Accueil extends GridPane {
         });
         
         //action de l'appui sur le bouton créer catégorie
+        Badmin.setOnAction((t) ->{
+            
+                
+            try {
+                Scene sc5 = new Scene(new GererRole(stage,con));
+                stage.setScene(sc5);
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
+                
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
         Bcreerobj.setOnAction((t) ->{
             
                 

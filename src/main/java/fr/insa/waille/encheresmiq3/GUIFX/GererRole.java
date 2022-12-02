@@ -5,14 +5,17 @@
 package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeCategorie;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getAllUsers;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -22,42 +25,46 @@ import javafx.stage.Stage;
  *
  * @author valen
  */
-public class CreerCat extends GridPane{
+public class GererRole extends GridPane{
 
-    public CreerCat(Stage stage, Connection con) throws FileNotFoundException{
+    public GererRole(Stage stage, Connection con) throws FileNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
-        Label Lnouvcat = new Label("Entrez le nom d'une nouvelle catégorie");
-        TextField Fnouvcat = new TextField();
+        Label Lutilisateurs = new Label("Liste des utilisateurs: ");
+        Label Lrole = new Label("Liste des rôles");
+        //AFFICHAGE DE LA LISTE DES CATEGORIES
+        ComboBox listeUsers = new ComboBox();
+        ArrayList<String> Utilisateurs = new ArrayList<String>();
+        try {
+            Utilisateurs = getAllUsers(con);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            }       
+        listeUsers.getItems().setAll(Utilisateurs);
+        
+        ComboBox listeRoles = new ComboBox();
+        ArrayList<String> Roles = new ArrayList<String>();
+        Roles.add("Lambda");
+        Roles.add("Catégorie");
+        Roles.add("Admin");
+        listeRoles.getItems().setAll(Roles);
+        
         Label panneau = new Label();
-        Button Bcreercat = new Button("Créer catégorie");
+        Button Brole = new Button("Attribuer rôle");
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
         this.add(logo, 0, 0);
-        this.add(Lnouvcat,0,1);
-        this.add(Fnouvcat,1,1);
-        this.add(Bcreercat,2,1);
-        this.add(panneau,0,2);
-        this.add(Bretour,0,3);
+        this.add(Lutilisateurs,0,1);
+        this.add(listeUsers,0,2);
+        this.add(Lrole,1,1);
+        this.add(listeRoles,1,2);
+        this.add(panneau,0,3);
+        this.add(Brole,0,4);
+        this.add(Bretour,1,4);
         
-        //action de l'appui sur le bouton creerCat
-        Bcreercat.setOnAction((t) ->{
-            String nom = Fnouvcat.getText();
-            
-            
-            //utilisation de la fonction creeUtilisateur
-            try {
-                creeCategorie(con,nom);
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            Fnouvcat.setText("");
-            
-            panneau.setText("Création de la nouvelle catégorie effectuée");
-        });
         
         //action de l'appui sur le bouton retour
         Bretour.setOnAction((var t) ->{
