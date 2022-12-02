@@ -16,6 +16,9 @@ import java.io.FileNotFoundException;
 import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import static java.time.LocalDate.now;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
@@ -108,8 +111,9 @@ public class ObjetPlus extends GridPane{
     
     //action de l'appuie sur le bouton enchere
     Bencherir.setOnAction((t) ->{
-
-        String quand = "aujourd'hui";
+        
+        String quand = now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        System.out.println(quand);
         int nouvprix = Integer.parseInt(TnouvPrix.getText());
         String email;
         int idUser=0;
