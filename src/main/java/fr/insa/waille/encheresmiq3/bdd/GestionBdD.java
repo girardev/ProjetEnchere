@@ -5,6 +5,11 @@
 package fr.insa.waille.encheresmiq3.bdd;
 
 import fr.insa.encheresmiq3.modele.Objet;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -16,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javax.imageio.ImageIO;
 
 /**
  * test git
@@ -38,7 +44,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -72,7 +78,8 @@ public class GestionBdD {
                         fin varchar(200) not null,
                         prix_base integer not null,
                         categorie integer not null,
-                        propose_par integer not null
+                        propose_par integer not null,
+                        image bytea
                     )
                     """);
             st.executeUpdate(
@@ -818,7 +825,7 @@ public class GestionBdD {
     }
     
     public static ArrayList getObjets(Connection con)
-            throws SQLException{
+            throws SQLException, IOException{
         ResultSet resultat;
         ArrayList<Objet> listeObjets = new ArrayList<Objet>();
         con.setAutoCommit(false);
@@ -839,7 +846,11 @@ public class GestionBdD {
                 int categorie = resultat.getInt("categorie");
                 int prix_base = resultat.getInt("prix_base"); 
                 int propose_par = resultat.getInt("propose_par");
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,propose_par));
+                //conversion image array byte -> image
+                byte[] byteImage = resultat.getBytes("image");
+                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
+                BufferedImage newImage = ImageIO.read(inStreambj);
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
             }
         }
         catch (SQLException ex) {
@@ -902,7 +913,7 @@ public class GestionBdD {
     }
     
     public static ObservableList rechercheObjetParCategorie(Connection con,int categorie)
-            throws SQLException{
+            throws SQLException, IOException{
         con.setAutoCommit(false);
         ObservableList<Objet> listeObj = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
@@ -920,7 +931,11 @@ public class GestionBdD {
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
-                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base, propose_par));
+                //conversion image array byte -> image
+                byte[] byteImage = resultats.getBytes("image");
+                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
+                BufferedImage newImage = ImageIO.read(inStreambj);
+                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base,newImage, propose_par));
             }
             return listeObj;
         }
@@ -940,7 +955,7 @@ public class GestionBdD {
     
     
     public static ObservableList rechercheObjetParMotCle(Connection con, String motCle)
-            throws SQLException{
+            throws SQLException, IOException{
         con.setAutoCommit(false);
         //initialisation de la liste
         ObservableList<Objet> listeObjets = FXCollections.observableArrayList();
@@ -960,7 +975,11 @@ public class GestionBdD {
                 int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
                 System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,propose_par));
+                //conversion image array byte -> image
+                byte[] byteImage = resultats.getBytes("image");
+                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
+                BufferedImage newImage = ImageIO.read(inStreambj);
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
             }
         }
         catch (SQLException ex) {
@@ -978,13 +997,46 @@ public class GestionBdD {
         return listeObjets;
     }
 
-    public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par)
+    public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie, byte[]image, int propose_par)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
         """
-                    insert into objet (titre, description, debut, fin, prix_base, categorie, propose_par)
-                    values (?, ?, ?, ?, ?, ?, ?)
+                    insert into objet (titre, description, debut, fin, prix_base, categorie, image, propose_par)
+                    values (?, ?, ?, ?, ?, ?, ?, ?)
+                    """)) {
+            pst.setString(1, titre);
+            pst.setString(2, description);
+            pst.setString(3, debut);
+            pst.setString(4, fin);
+            pst.setInt(5,prix_base);
+            pst.setInt(6,categorie);
+            pst.setBytes(7, image);
+            pst.setInt(8,propose_par);
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
+        public static void creeObjetImage(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par, String path)
+            throws SQLException, IOException {
+        con.setAutoCommit(false);
+        //test :
+        File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\logo_lemauvaiscoin.png");
+        BufferedImage img = ImageIO.read(file);
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(img, "png", bos );
+        byte [] data = bos.toByteArray();
+        try (PreparedStatement pst = con.prepareStatement(
+        """
+                    insert into objet (titre, description, debut, fin, prix_base, categorie, propose_par, image)
+                    values (?, ?, ?, ?, ?, ?, ?, ?)
                     """)) {
             pst.setString(1, titre);
             pst.setString(2, description);
@@ -993,6 +1045,7 @@ public class GestionBdD {
             pst.setInt(5,prix_base);
             pst.setInt(6,categorie);
             pst.setInt(7,propose_par);
+            pst.setBytes(8, data);
             pst.executeUpdate();
             con.commit();
             con.setAutoCommit(true);
@@ -1020,7 +1073,7 @@ public class GestionBdD {
             int categorie = Lire.i();
             System.out.println("objet proposé par :");
             int propose_par = Lire.i();
-            creeObjet(con,titre,description,debut,fin,prix_base,categorie,propose_par);
+            //creeObjet(con,titre,description,debut,fin,prix_base,categorie,propose_par);
     }    
     
     public static void deleteAllUtilisateurs(Connection con) throws SQLException {
@@ -1156,7 +1209,7 @@ public class GestionBdD {
         }
     }
     
-    public static void creeSchemaDeBase(Connection con) throws SQLException {
+    public static void creeSchemaDeBase(Connection con) throws SQLException, IOException {
             con.setAutoCommit(false);{
             deleteSchema(con);
             creeSchema(con);
@@ -1166,19 +1219,24 @@ public class GestionBdD {
             creeCategorie(con, "meubles");
             creeCategorie(con, "habits");
             creeCategorie(con, "alcools");
-            creeObjet(con, "oettinger", "biere de luxe et rentable", "lundi", "vendredi", 1, 3, 1);
-            creeObjet(con, "jack_daniel", "whisky de luxe", "lundi", "jeudi", 20, 3, 2);
-            creeObjet(con, "gin", "bien deg", "mardi", "jeudi", 15, 3, 3);
-            creeObjet(con, "4 chaises", "robustes", "mardi", "vendredi", 50, 1, 1);
-            creeObjet(con, "table", "bois massif parfaite pour les reichtags", "mercredi", "jeudi", 100, 1, 2);
-            creeObjet(con, "2 girafes", "contenance 6L", "mardi", "samedi", 45, 1, 3);
-            creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2, 1);
-            creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2, 2);
-            creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2, 3);
+            File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.jpg");
+            BufferedImage img = ImageIO.read(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ImageIO.write(img, "jpg", bos );
+            byte [] data = bos.toByteArray();
+            creeObjet(con, "oettinger", "biere de luxe et rentable", "lundi", "vendredi", 1, 3,data, 1);
+            creeObjet(con, "jack_daniel", "whisky de luxe", "lundi", "jeudi", 20, 3,data, 2);
+            creeObjet(con, "gin", "bien deg", "mardi", "jeudi", 15, 3,data, 3);
+            creeObjet(con, "4 chaises", "robustes", "mardi", "vendredi", 50, 1,data, 1);
+            creeObjet(con, "table", "bois massif parfaite pour les reichtags", "mercredi", "jeudi", 100, 1,data, 2);
+            creeObjet(con, "2 girafes", "contenance 6L", "mardi", "samedi", 45, 1,data, 3);
+            creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2,data, 1);
+            creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2,data, 2);
+            creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2,data, 3);
         }
     }
     
-    public static void menuTextuel(Connection con){
+    public static void menuTextuel(Connection con) throws IOException{
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
         boolean stop = false; //condition d'arret
         while(stop==false){
@@ -1287,7 +1345,7 @@ public class GestionBdD {
     }
 
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         try {
             Connection con = defautConnect();
             creeSchemaDeBase(con);
