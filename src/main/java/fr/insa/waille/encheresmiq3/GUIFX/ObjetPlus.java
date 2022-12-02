@@ -7,7 +7,6 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeEnchere;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
