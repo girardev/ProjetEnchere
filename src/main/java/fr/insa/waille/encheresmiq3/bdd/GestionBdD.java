@@ -57,8 +57,8 @@ public class GestionBdD {
                         prenom varchar(30) not null,
                         pass varchar(30) not null,
                         email varchar(50) not null unique,
-                        code_postal varchar(30) not null
-                        role varchar(50) not null;
+                        code_postal varchar(30) not null,
+                        role varchar(50) not null
                     )
                     """);
             st.executeUpdate(
@@ -354,6 +354,35 @@ public class GestionBdD {
         return id;
     }
     
+    public static String getRoleUtilisateur(Connection con, String email)
+            throws SQLException{
+        ResultSet resultat;
+        String role = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select role from utilisateur where email like'"+email+"'"
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                role=resultat.getString("role");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return role;
+    }
+    
     public static String getUtilisateur(Connection con,int id)
             throws SQLException{
         ResultSet resultat;
@@ -442,7 +471,7 @@ public class GestionBdD {
         }
     }
 
-    public static String getRole(Connection con)
+    public static String getRoleUtilisateurEnCours(Connection con)
             throws SQLException{
         ResultSet resultat;
         String role = null;
