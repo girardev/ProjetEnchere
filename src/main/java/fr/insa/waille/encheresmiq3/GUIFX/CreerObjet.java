@@ -26,6 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import java.sql.Timestamp;
 
 /**
  *
@@ -62,6 +63,13 @@ public class CreerObjet extends GridPane{
             }       
         listeCategorie.getItems().setAll(categories);
         
+        //SELECTEUR HEURE DEBUT
+        ComboBox listeHeureD = new ComboBox();
+        listeHeureD.getItems().addAll("00:00:00","01:00:00","02:00:00","03:00:00","04:00:00","05:00:00","06:00:00","07:00:00","08:00:00","09:00:00","10:00:00","11:00:00","12:00:00","14:00:00","15:00:00","16:00:00","17:00:00","18:00:00","19:00:00","20:00:00","21:00:00","22:00:00","23:00:00","24:00:00");
+        //SELECTEUR HEURE FIN
+        ComboBox listeHeureF = new ComboBox();
+        listeHeureF.getItems().addAll("00:00:00","01:00:00","02:00:00","03:00:00","04:00:00","05:00:00","06:00:00","07:00:00","08:00:00","09:00:00","10:00:00","11:00:00","12:00:00","14:00:00","15:00:00","16:00:00","17:00:00","18:00:00","19:00:00","20:00:00","21:00:00","22:00:00","23:00:00","24:00:00");
+        
         Label panneau = new Label();
         Button Bcreerobj = new Button("Créer l'objet");
         Button Bretour = new Button("Retour à l'accueil");
@@ -75,8 +83,10 @@ public class CreerObjet extends GridPane{
         this.add(Fdesc,1,3);
         this.add(Ldebut,0,4);
         this.add(Ddebut,1,4);
+        this.add(listeHeureD, 2, 4);
         this.add(Lfin,0,5);
         this.add(Dfin,1,5);
+        this.add(listeHeureF, 2, 5);
         this.add(Lprix,0,6);
         this.add(Fprix,1,6);
         this.add(listeCategorie,1,7);
@@ -84,14 +94,22 @@ public class CreerObjet extends GridPane{
         this.add(Bcreerobj,2,1);
         this.add(Bretour,2,2);
         
-        //action de l'appuie sur le bouton inscription
+        //action de l'appuie sur le bouton creer objet
         Bcreerobj.setOnAction((t) ->{
             String titre = Ftitre.getText();
             String description = Fdesc.getText();
-            LocalDate debut = Ddebut.getValue();
-            String datedebut = debut.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            LocalDate debut = Ddebut.getValue(); //récupère date picker
+            String datedebut = debut.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String heuredebut = (String) listeHeureD.getSelectionModel().getSelectedItem();
             LocalDate fin = Dfin.getValue();
-            String datefin = fin.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            String datefin = fin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            String heurefin = (String) listeHeureD.getSelectionModel().getSelectedItem();
+            //crée les Timestamp correspondant au choix de l'utilisateur
+            Timestamp timestampDebut = Timestamp.valueOf(datedebut + " " + heuredebut);
+            Timestamp timestampFin = Timestamp.valueOf(datefin + " " + heurefin);
+            System.out.println(timestampDebut);
+            System.out.println(timestampFin);
+            
             
             int prix = Integer.parseInt(Fprix.getText());
             String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
