@@ -6,11 +6,13 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeObjet;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeObjetImage;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -133,9 +135,13 @@ public class CreerObjet extends GridPane{
             
             if(!(categorieInt==-1||propose_par==-1)){
             
-                //utilisation de la fonction creeUtilisateur
+                //utilisation de la fonction creeObjet
                 try {
-                    creeObjet(con,titre,description,datedebut,datefin,prix,categorieInt,propose_par);
+                    try {
+                        creeObjetImage(con,titre,description,datedebut,datefin,prix,categorieInt,propose_par, "logo_lemauvaiscoin.png");
+                    } catch (IOException ex) {
+                        Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 } catch (SQLException ex) {
                     Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
                 }
