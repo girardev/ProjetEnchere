@@ -217,7 +217,6 @@ public class GestionBdD {
             } catch (SQLException ex) {
                 // nothing to do : maybe the table was not created
             }
-            //blabla
             try {
                 st.executeUpdate(
                         """
