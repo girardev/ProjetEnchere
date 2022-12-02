@@ -10,7 +10,7 @@ import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRole;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
 import java.io.FileInputStream;
@@ -121,7 +121,7 @@ public class Accueil extends GridPane {
         
         String role = null;
         try {
-            role = getRole(con);
+            role = getRoleUtilisateurEnCours(con);
         } catch (SQLException ex) {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }

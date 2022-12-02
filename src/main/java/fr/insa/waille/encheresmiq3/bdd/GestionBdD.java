@@ -449,6 +449,23 @@ public class GestionBdD {
         return listeUsers;
     }
     
+    public static void ModifierRoleUtilisateur(Connection con,String email,String role)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        "update utilisateur set role = '"+role+"' where email like '"+email+"' "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
     public static void creeUtilisateurEnCours(Connection con,String email,String pass,String role)
             throws SQLException {
         con.setAutoCommit(false);
@@ -533,6 +550,23 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
         return email;
+    }
+    
+    public static void ModifierRoleUtilisateurEnCours(Connection con,String email,String role)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        "update UtilisateurEnCours set role = '"+role+"' where email like '"+email+"' "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
     }
     
     
