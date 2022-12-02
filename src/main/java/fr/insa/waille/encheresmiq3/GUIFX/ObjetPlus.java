@@ -12,7 +12,13 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getUtilisateur;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -24,8 +30,14 @@ import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javax.imageio.ImageIO;
+         
+
+
 
 /**
  *
@@ -33,7 +45,7 @@ import javafx.stage.Stage;
  */
 public class ObjetPlus extends GridPane{
 
-    public ObjetPlus(Stage stage, Connection con, Objet obj) throws FileNotFoundException, SQLException{
+    public ObjetPlus(Stage stage, Connection con, Objet obj) throws FileNotFoundException, SQLException, IOException{
         
     Label logo = recupererLogo();
         
@@ -44,6 +56,16 @@ public class ObjetPlus extends GridPane{
     int prix_base = obj.getPrix_base();
     int categorie = obj.getCategorie();
     int propose_par = obj.getPropose_par();
+    BufferedImage bfimage = obj.getImage();
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ImageIO.write(bfimage, "png", bos );
+    byte [] data = bos.toByteArray();
+    InputStream is = new ByteArrayInputStream(data);
+    Image img = new Image(is);
+    ImageView imageView = new ImageView(img);
+    imageView.setFitHeight(75);
+    imageView.setFitWidth(185);
+    Label imageObjet = new Label("",imageView);
     
     Label Ltitre = new Label("Titre : ");
     Ltitre.setStyle("-fx-max-width: 50");
@@ -99,6 +121,7 @@ public class ObjetPlus extends GridPane{
     this.add(ShowPropose_par,1,9);
     this.add(Bprop,3,1);
     this.add(panneau,3,2);
+    this.add(imageObjet, 0, 10);
     
     //action de l'appuie sur le bouton enchere
     Bprop.setOnAction((t) ->{
