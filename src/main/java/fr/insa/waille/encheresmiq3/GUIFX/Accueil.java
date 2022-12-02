@@ -6,6 +6,7 @@
  */
 package fr.insa.waille.encheresmiq3.GUIFX;
 
+import javafx.application.Application;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
@@ -29,14 +30,24 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import javax.swing.Box;
+import javax.swing.GroupLayout.Group;
+
 
 /**
  *
@@ -48,6 +59,7 @@ public class Accueil extends GridPane {
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
+        logo.setStyle(" -fx-border-width:5px ;-fx-border-style: solid; -fx-border-color: orange; ");
         Label titre = new Label("LeMauvaisCoin");
         titre.setStyle("-fx-max-width: 100");
         titre.setStyle("-fx-font-weight: bold");
@@ -57,9 +69,6 @@ public class Accueil extends GridPane {
         Label Lcategorie = new Label("Catégories");
         Button Bcategorie = new Button("Par catégorie");
         Label panneau = new Label();
-        Button Bcreercat = new Button("Créer catégorie");
-        Button Bcreerobj = new Button("Ajouter un objet");
-        Button Bvoirplus = new Button("Voir plus sur l'objet sélectionné");
         Button Badmin = new Button("Gérer les rôles");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
@@ -104,21 +113,39 @@ public class Accueil extends GridPane {
             table.getColumns().setAll(coltitre, coldescription, colprix,colvoirplus);
             
             table.setItems(listeAllObj);
-            //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
+            //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
             this.add(table, 0, 5,5,1); 
             
-           
+        // Create MenuBar
+        MenuBar leftBar = new MenuBar();
+        MenuBar rightBar = new MenuBar();
         
-        //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 0, 0);
-        this.add(Lrecherche,0,1);
-        this.add(Frecherche,1,1);
-        this.add(Brecherche,2,1);
-        this.add(Lcategorie,0,2);
-        this.add(listeCategorie,1,2);
-        this.add(Bcategorie,2,2);
-        this.add(panneau,0,4);
-        this.add(Bcreerobj,3,2);  
+        // Create menus
+        Menu creationMenu = new Menu("Création");
+        Menu espaceMenu = new Menu("Mon espace");
+        Menu gestionMenu = new Menu("Gestion");
+        Menu quitterMenu = new Menu("Quitter");
+        
+        
+        //create menu items
+        MenuItem creerobj = new MenuItem("Créer une vente d'objet");
+        MenuItem creercat = new MenuItem("Créer une catégorie");
+        MenuItem mesencheres = new MenuItem("Mes enchères");
+        MenuItem mesobjets = new MenuItem("Mes objets");
+        MenuItem gestionrole = new MenuItem("Gestion des rôles");
+        MenuItem deco = new MenuItem("Déconnexion");
+        MenuItem fermer = new MenuItem("Fermer");
+        
+        
+        // Add Menus to the MenuBar
+        leftBar.getMenus().addAll(creationMenu,espaceMenu);
+        
+        rightBar.getMenus().addAll(quitterMenu);
+        
+        Region spacer = new Region();
+        spacer.getStyleClass().add("menu-bar");
+        HBox.setHgrow(spacer, Priority.SOMETIMES);
+        HBox menubars = new HBox(leftBar, spacer, rightBar);
         
         String role = null;
         try {
@@ -126,10 +153,38 @@ public class Accueil extends GridPane {
         } catch (SQLException ex) {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         if(role.equals("Admin")){
-            this.add(Bcreercat,3,1);
-            this.add(Badmin,4,1);
+            leftBar.getMenus().addAll(gestionMenu);
+            gestionMenu.getItems().addAll(gestionrole);
         }
+        if(role.equals("Admin")||role.equals("Categorie")){
+            creationMenu.getItems().addAll(creerobj,creercat);
+            
+        }
+        else{
+            creationMenu.getItems().addAll(creerobj);
+        }
+        
+        espaceMenu.getItems().addAll(mesencheres,mesobjets);
+        
+        quitterMenu.getItems().addAll(deco,fermer);
+        
+        this.add(menubars,0,0,10,1);
+        
+        
+        
+        //AJOUT DES COMPOSANTS AU GRIDPANE
+        this.add(logo, 2, 1);
+        this.add(Lrecherche,0,2);
+        this.add(Frecherche,1,2);
+        this.add(Brecherche,2,2);
+        this.add(Lcategorie,0,3);
+        this.add(listeCategorie,1,3);
+        this.add(Bcategorie,2,3);
+        this.add(panneau,0,5);  
+        
+        
         
         //action de l'appui sur le bouton recherche par catégorie
         Bcategorie.setOnAction((t) ->{
@@ -171,9 +226,9 @@ public class Accueil extends GridPane {
             this.affichageResultats(con, listeObjet);
             Frecherche.setText("");          
         });
-    
+        
         //action de l'appui sur le bouton créer catégorie
-        Bcreercat.setOnAction((t) ->{
+        creercat.setOnAction((t) ->{
             
                 
             try {
@@ -186,13 +241,13 @@ public class Accueil extends GridPane {
                 
         });
         
-        //action de l'appui sur le bouton créer catégorie
-        Badmin.setOnAction((t) ->{
+        //action de l'appui sur le bouton gerer role
+        gestionrole.setOnAction((t) ->{
             
                 
             try {
-                Scene sc5 = new Scene(new GererRole(stage,con));
-                stage.setScene(sc5);
+                Scene sc4 = new Scene(new GererRole(stage,con));
+                stage.setScene(sc4);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -201,17 +256,58 @@ public class Accueil extends GridPane {
         });
         
         //action de l'appui sur le bouton créer OBJET
-        Bcreerobj.setOnAction((t) ->{
+        creerobj.setOnAction((t) ->{
             
                 
             try {
-                Scene sc4 = new Scene(new CreerObjet(stage,con));
-                stage.setScene(sc4);
+                Scene sc5 = new Scene(new CreerObjet(stage,con));
+                stage.setScene(sc5);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
                 
                 
+        });
+        
+        //action de l'appui sur le bouton deconnexion
+        deco.setOnAction((t) ->{
+               
+            Scene sc6 = new Scene(new GridPaneAuthentification(stage,con));
+            stage.setScene(sc6);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        mesobjets.setOnAction((t) ->{
+               
+            Scene sc7 = null;
+            try {
+                sc7 = new Scene(new MesObjets(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stage.setScene(sc7);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        mesencheres.setOnAction((t) ->{
+               
+            Scene sc8 = null;
+            try {
+                sc8 = new Scene(new MesEncheres(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stage.setScene(sc8);
+    
+        });
+        
+        //action de l'appui sur le bouton fermer
+        fermer.setOnAction((t) ->{
+               
+           System.exit(0);
+    
         });
         
     }
@@ -225,6 +321,7 @@ public class Accueil extends GridPane {
         imageView.setFitHeight(75);
         imageView.setFitWidth(185);
         Label logo = new Label("",imageView);
+        logo.setStyle(" -fx-border-width:5px ;-fx-border-style: solid; -fx-border-color: orange; ");
         return logo;
     }
     
@@ -262,7 +359,7 @@ public class Accueil extends GridPane {
             
             table.setItems(listeObjet);
             //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
-            this.add(table, 0, 5,5,1);                  
+            this.add(table, 0, 6,5,1);                  
     }
     
     

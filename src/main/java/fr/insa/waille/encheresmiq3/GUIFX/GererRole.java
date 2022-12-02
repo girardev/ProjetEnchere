@@ -51,7 +51,7 @@ public class GererRole extends GridPane{
         ComboBox listeRoles = new ComboBox();
         ArrayList<String> Roles = new ArrayList<String>();
         Roles.add("Lambda");
-        Roles.add("Catégorie");
+        Roles.add("Categorie");
         Roles.add("Admin");
         listeRoles.getItems().setAll(Roles);
         
@@ -60,14 +60,14 @@ public class GererRole extends GridPane{
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 0, 0);
+        this.add(logo, 1, 0);
         this.add(Lutilisateurs,0,1);
         this.add(listeUsers,0,2);
         this.add(Lrole,1,1);
         this.add(listeRoles,1,2);
         this.add(panneau,0,3);
-        this.add(Brole,0,4);
-        this.add(Bretour,1,4);
+        this.add(Brole,1,4);
+        this.add(Bretour,0,4);
         
         
         //action de l'appui sur le bouton retour
@@ -88,7 +88,6 @@ public class GererRole extends GridPane{
                 Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
             }
             panneau.setText("Modification effectuée");
-            
             
         });
         

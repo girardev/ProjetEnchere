@@ -11,6 +11,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -67,6 +68,8 @@ public class Objet {
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
+                Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage2.setWidth(1000);

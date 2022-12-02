@@ -7,6 +7,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeSchemaDeBase;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -24,7 +25,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage stage) throws SQLException {
+    public void start(Stage stage) throws SQLException, IOException {
         Connection con = null;
         try {
             con = defautConnect();
@@ -35,7 +36,7 @@ public class Main extends Application {
         }
         creeSchemaDeBase(con);
         Scene sc = new Scene(new GridPaneAuthentification(stage,con));
-        stage.setWidth(1000);
+        stage.setWidth(700);
         stage.setHeight(600);
         stage.setScene(sc);
         stage.setTitle("Encheres");
