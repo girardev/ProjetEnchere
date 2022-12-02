@@ -13,12 +13,15 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -42,9 +45,9 @@ public class CreerObjet extends GridPane{
         Label Ldesc = new Label("Description");
         TextField Fdesc = new TextField();
         Label Ldebut = new Label("Début");
-        TextField Fdebut = new TextField();
+        DatePicker Ddebut = new DatePicker();
         Label Lfin = new Label("Fin");
-        TextField Ffin = new TextField();
+        DatePicker Dfin = new DatePicker();
         Label Lprix = new Label("Prix");
         TextField Fprix = new TextField();
         
@@ -71,9 +74,9 @@ public class CreerObjet extends GridPane{
         this.add(Ldesc,0,3);
         this.add(Fdesc,1,3);
         this.add(Ldebut,0,4);
-        this.add(Fdebut,1,4);
+        this.add(Ddebut,1,4);
         this.add(Lfin,0,5);
-        this.add(Ffin,1,5);
+        this.add(Dfin,1,5);
         this.add(Lprix,0,6);
         this.add(Fprix,1,6);
         this.add(listeCategorie,1,7);
@@ -85,8 +88,11 @@ public class CreerObjet extends GridPane{
         Bcreerobj.setOnAction((t) ->{
             String titre = Ftitre.getText();
             String description = Fdesc.getText();
-            String debut = Fdebut.getText();
-            String fin = Ffin.getText();
+            LocalDate debut = Ddebut.getValue();
+            String datedebut = debut.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            LocalDate fin = Dfin.getValue();
+            String datefin = fin.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+            
             int prix = Integer.parseInt(Fprix.getText());
             String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
             
@@ -111,15 +117,15 @@ public class CreerObjet extends GridPane{
             
                 //utilisation de la fonction creeUtilisateur
                 try {
-                    creeObjet(con,titre,description,debut,fin,prix,categorieInt,propose_par);
+                    creeObjet(con,titre,description,datedebut,datefin,prix,categorieInt,propose_par);
                 } catch (SQLException ex) {
                     Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
                 }
 
                 Ftitre.setText("");
                 Fdesc.setText("");
-                Fdebut.setText("");
-                Ffin.setText("");
+                Ddebut.setValue(null);
+                Dfin.setValue(null);
                 Fprix.setText("");
 
                 panneau.setText("Ajout de l'objet effectué");
@@ -127,8 +133,8 @@ public class CreerObjet extends GridPane{
             else{
                 Ftitre.setText("");
                 Fdesc.setText("");
-                Fdebut.setText("");
-                Ffin.setText("");
+                Ddebut.setValue(null);
+                Dfin.setValue(null);
                 Fprix.setText("");
 
                 panneau.setText("Ajout de l'objet impossible à effectuer"); 

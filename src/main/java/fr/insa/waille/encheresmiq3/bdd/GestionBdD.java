@@ -67,8 +67,8 @@ public class GestionBdD {
                         generated always as identity,
                         titre varchar(500) not null,
                         description text not null,
-                        debut varchar(50) not null,
-                        fin varchar(50) not null,
+                        debut varchar(200) not null,
+                        fin varchar(200) not null,
                         prix_base integer not null,
                         categorie integer not null,
                         propose_par integer not null
@@ -79,7 +79,7 @@ public class GestionBdD {
                     create table enchere (
                         id integer not null primary key
                         generated always as identity,
-                        quand varchar(50) not null,
+                        quand varchar(200) not null,
                         montant integer not null,
                         de integer not null,
                         sur integer not null
