@@ -8,6 +8,8 @@ import fr.insa.waille.encheresmiq3.GUIFX.Accueil;
 import fr.insa.waille.encheresmiq3.GUIFX.GridPaneAuthentification;
 import fr.insa.waille.encheresmiq3.GUIFX.ObjetPlus;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,11 +32,12 @@ public class Objet {
     private int categorie;
     private int prix_base;
     private int propose_par;
+    private BufferedImage image;
     private Button Bvoirplus;
     
     //constructeurs
 
-    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base, int propose_par){
+    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base,BufferedImage image, int propose_par){
         this.id=id;
         this.titre=titre;
         this.description=description;
@@ -43,6 +46,7 @@ public class Objet {
         this.categorie=categorie;
         this.prix_base=prix_base;
         this.propose_par=propose_par;
+        this.image=image;
         this.Bvoirplus=new Button("Voir plus");
         
         //action de l'appui sur le bouton voir plus
@@ -116,6 +120,10 @@ public class Objet {
 
     public int getPropose_par() {
         return propose_par;
+    }
+    
+    public BufferedImage getImage(){
+        return image;
     }
     
     public Button getBvoirplus() {
