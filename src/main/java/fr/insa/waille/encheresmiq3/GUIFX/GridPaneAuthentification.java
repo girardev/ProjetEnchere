@@ -112,8 +112,8 @@ public class GridPaneAuthentification extends GridPane {
         this.add(Femail2, 3, 1);
         this.add(labelPass2, 2, 2);
         this.add(Fpass2, 3, 2);
-        this.add(B_Connexion, 2, 6);
-        this.add(panneau2,2,7);
+        this.add(B_Connexion, 3, 6);
+        this.add(panneau2,3,7);
         
         
         //action de l'appuie sur le bouton connexion

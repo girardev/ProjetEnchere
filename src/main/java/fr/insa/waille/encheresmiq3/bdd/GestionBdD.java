@@ -266,7 +266,7 @@ public class GestionBdD {
                     select * from utilisateur
                     """
             );
-            System.out.println("Liste des utilisateurs :");
+           
             while(resultats.next()){
                 int id = resultats.getInt("id");
                 String nom = resultats.getString("nom");
@@ -274,7 +274,7 @@ public class GestionBdD {
                 String code_postal = resultats.getString("code_postal");
                 String email = resultats.getString("email");               
                 String pass = resultats.getString("pass");
-                System.out.println(id+" : "+nom+" "+prenom+" "+email+" "+pass+" "+code_postal);
+                
             }
         }
         catch (SQLException ex) {
@@ -1028,7 +1028,7 @@ public class GestionBdD {
             String query = "select objet.id, titre, description, debut, fin, prix_base, propose_par, image from objet join categorie on objet.categorie = categorie.id where categorie.id = "+categorie+" ";
 
             ResultSet resultats = st.executeQuery(query);
-            System.out.println("Liste des objets :");
+            
             while(resultats.next()){
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
@@ -1037,7 +1037,7 @@ public class GestionBdD {
                 String fin = resultats.getString("fin");              
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
-                System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
+                
                 //conversion image array byte -> image
                 byte[] byteImage = resultats.getBytes("image");
                 ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
@@ -1099,7 +1099,7 @@ public class GestionBdD {
             String query ="select * from objet where titre like '%"+motCle+"%' or description like '%"+motCle+"%'";
             ResultSet resultats = st.executeQuery(query);
             
-            System.out.println("Résultats recherche :");
+            
             while(resultats.next()){
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
@@ -1109,7 +1109,7 @@ public class GestionBdD {
                 int prix_base = resultats.getInt("prix_base");
                 int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
-                System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
+                
                 //conversion image array byte -> image
                 byte[] byteImage = resultats.getBytes("image");
                 ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
