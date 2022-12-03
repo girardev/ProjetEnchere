@@ -104,7 +104,7 @@ public class ObjetPlus extends GridPane{
     String Spropose_par = getUtilisateur(con,propose_par);
     Label ShowPropose_par = new Label(Spropose_par);
     
-    this.add(logo,0,0);
+    this.add(logo,1,0);
     this.add(Ltitre,0,1);
     this.add(ShowTitre,0,2);
     this.add(Ldescription,0,3);
@@ -165,6 +165,7 @@ public class ObjetPlus extends GridPane{
                 TnouvPrix.setText("");
                 this.getChildren().remove(Bencherir);
                 this.getChildren().remove(TnouvPrix);
+                
                 try {
                     System.out.println(getPrixMaxSurObjet(con, obj.getId()));
                 } catch (SQLException ex) {

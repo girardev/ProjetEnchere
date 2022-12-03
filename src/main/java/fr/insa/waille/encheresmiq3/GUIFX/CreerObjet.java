@@ -40,6 +40,7 @@ public class CreerObjet extends GridPane{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
+        logo.setStyle(" -fx-border-width:5px ;-fx-border-style: solid; -fx-border-color: orange; ");
         Label Lajout = new Label("Ajouter un nouvel objet");
         Lajout.setStyle("-fx-max-width: 50");
         Lajout.setStyle("-fx-font-weight: bold");
@@ -93,8 +94,8 @@ public class CreerObjet extends GridPane{
         this.add(Fprix,1,6);
         this.add(listeCategorie,1,7);
         this.add(panneau,1,8);
-        this.add(Bcreerobj,2,1);
-        this.add(Bretour,2,2);
+        this.add(Bcreerobj,1,9);
+        this.add(Bretour,0,9);
         
         //action de l'appuie sur le bouton creer objet
         Bcreerobj.setOnAction((t) ->{
@@ -180,6 +181,8 @@ public class CreerObjet extends GridPane{
             } catch (SQLException ex) {
                 Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
+                Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
             }
            

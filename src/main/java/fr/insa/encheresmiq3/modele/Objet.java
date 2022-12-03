@@ -8,10 +8,12 @@ import fr.insa.waille.encheresmiq3.GUIFX.Accueil;
 import fr.insa.waille.encheresmiq3.GUIFX.GridPaneAuthentification;
 import fr.insa.waille.encheresmiq3.GUIFX.ObjetPlus;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -20,36 +22,51 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
+
 /**
  *
  * @author arvar
  */
 public class Objet {
+    
     private int id;
     private String titre;
     private String description;
     private String debut;
     private String fin;
     private int categorie;
-    private int prix_base;
+    public int prix_base;
     private int propose_par;
     private BufferedImage image;
     private Button Bvoirplus;
+    private int prix_actuel;
+    Connection con;
     
     //constructeurs
 
-    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base,BufferedImage image, int propose_par){
-        this.id=id;
-        this.titre=titre;
-        this.description=description;
-        this.debut=debut;
-        this.fin=fin;
-        this.categorie=categorie;
-        this.prix_base=prix_base;
-        this.propose_par=propose_par;
-        this.image=image;
-        this.Bvoirplus=new Button("Voir plus");
+    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base,BufferedImage image, int propose_par) throws ClassNotFoundException, SQLException{
+        this(id, titre, description, debut, fin, categorie, prix_base, image, propose_par, prix_base);
         
+    }
+
+    //constructeurs
+    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base, BufferedImage image, int propose_par, int prix_base2) throws ClassNotFoundException, SQLException {
+        try {
+            this.con = defautConnect();
+        } catch (SQLException ex) {
+            Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.id = id;
+        this.titre = titre;
+        this.description = description;
+        this.debut = debut;
+        this.fin = fin;
+        this.categorie = categorie;
+        this.prix_base = prix_base;
+        this.propose_par = propose_par;
+        this.image = image;
+        this.Bvoirplus=new Button("Voir plus");
+        this.prix_actuel = max(prix_base,getPrixMaxSurObjet(con, id));
         //action de l'appui sur le bouton voir plus
         Bvoirplus.setOnAction((t) ->{
             Connection con = null;
@@ -61,10 +78,10 @@ public class Objet {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }
             
-            Stage stage2 = new Stage();
+            Stage stage = new Stage();
             Scene sc2 = null;
             try {
-                sc2 = new Scene(new ObjetPlus(stage2,con, (Objet) this));
+                sc2 = new Scene(new ObjetPlus(stage,con, (Objet) this));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
@@ -72,17 +89,17 @@ public class Objet {
             } catch (IOException ex) {
                 Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            stage2.setWidth(1000);
-            stage2.setHeight(600);
-            stage2.setScene(sc2);
-            stage2.setTitle("Encheres");
-            stage2.show();
+            stage.setWidth(700);
+            stage.setHeight(500);
+            stage.setScene(sc2);
+            stage.setTitle("Encheres");
+            stage.show();
             
         });
-        
     }
 
-    public Objet(int id, String titre, String description, int prix_base) {
+    public Objet(int id, String titre, String description, int prix_base) throws ClassNotFoundException, SQLException {
+        this.con = defautConnect();
         this.id=id;
         this.titre=titre;
         this.description=description;
@@ -132,6 +149,10 @@ public class Objet {
     public Button getBvoirplus() {
         return Bvoirplus;
     }
+    
+    public int getPrix_actuel() {
+        return prix_actuel;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -169,5 +190,7 @@ public class Objet {
         this.Bvoirplus = Bvoirplus;
     }
     
-    
+    public void setPrix_actuel(int prix_actuel) {
+        this.prix_base = prix_actuel;
+    }
 }

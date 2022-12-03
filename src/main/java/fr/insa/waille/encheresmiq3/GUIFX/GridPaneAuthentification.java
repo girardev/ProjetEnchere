@@ -158,6 +158,8 @@ public class GridPaneAuthentification extends GridPane {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
 

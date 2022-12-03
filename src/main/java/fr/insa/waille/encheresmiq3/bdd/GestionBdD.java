@@ -4,6 +4,7 @@
  */
 package fr.insa.waille.encheresmiq3.bdd;
 
+import fr.insa.encheresmiq3.modele.Enchere;
 import fr.insa.encheresmiq3.modele.Objet;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -44,7 +45,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
     }
     
     public static void creeSchema(Connection con)
@@ -677,6 +678,40 @@ public class GestionBdD {
             
     }
     
+    public static ObservableList rechercheEnchereParUtilisateur(Connection con,int idUser)
+            throws SQLException, IOException{
+        con.setAutoCommit(false);
+        ObservableList<Enchere> listeEnchere = FXCollections.observableArrayList();
+        try(Statement st = con.createStatement()){
+            String query = "select * from enchere where de = "+idUser+" ";
+
+            ResultSet resultats = st.executeQuery(query);
+            while(resultats.next()){
+                //String nom_categorie = resultats.getString("categorie.nom");
+                int id = resultats.getInt("id");
+                String quand = resultats.getString("quand");
+                int montant = resultats.getInt("montant");
+                int de = resultats.getInt("de");
+                int sur = resultats.getInt("sur");
+                String objet = getTitreObjet(con,sur);
+                listeEnchere.add(new Enchere(id,quand,montant,de,sur,objet));
+            }
+            return listeEnchere;
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+    }
+    
     
     
     public static void afficheCategorie(Connection con)
@@ -825,7 +860,7 @@ public class GestionBdD {
     }
     
     public static ArrayList getObjets(Connection con)
-            throws SQLException, IOException{
+            throws SQLException, IOException, ClassNotFoundException{
         ResultSet resultat;
         ArrayList<Objet> listeObjets = new ArrayList<Objet>();
         con.setAutoCommit(false);
@@ -850,7 +885,7 @@ public class GestionBdD {
                 byte[] byteImage = resultat.getBytes("image");
                 ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
                 BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par,prix_base));
             }
         }
         catch (SQLException ex) {
@@ -866,6 +901,46 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
         return listeObjets;
+    }
+    
+    public static ObservableList rechercheObjetParUtilisateur(Connection con,int idUser)
+            throws SQLException, IOException, ClassNotFoundException{
+        con.setAutoCommit(false);
+        ObservableList<Objet> listeObj = FXCollections.observableArrayList();
+        try(Statement st = con.createStatement()){
+            String query = "select * from objet where propose_par = "+idUser+" ";
+
+            ResultSet resultats = st.executeQuery(query);
+            while(resultats.next()){
+                //String nom_categorie = resultats.getString("categorie.nom");
+                int id = resultats.getInt("id");
+                String titre = resultats.getString("titre");
+                String description = resultats.getString("description");
+                String debut = resultats.getString("debut");
+                String fin = resultats.getString("fin");
+                int prix_base = resultats.getInt("prix_base");
+                int categorie = resultats.getInt("categorie");
+                int propose_par = resultats.getInt("propose_par");
+                //conversion image array byte -> image
+                byte[] byteImage = resultats.getBytes("image");
+                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
+                BufferedImage newImage = ImageIO.read(inStreambj);
+                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base,newImage, propose_par));
+            }
+            return listeObj;
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
     }
     
     public static void demandeCategorie(Connection con)
@@ -913,29 +988,28 @@ public class GestionBdD {
     }
     
     public static ObservableList rechercheObjetParCategorie(Connection con,int categorie)
-            throws SQLException, IOException{
+            throws SQLException, IOException, ClassNotFoundException{
         con.setAutoCommit(false);
         ObservableList<Objet> listeObj = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
-            String query = "select objet.id, titre, description, debut, fin, prix_base, propose_par from objet join categorie on objet.categorie = categorie.id where categorie.id = "+categorie+" ";
+            String query = "select objet.id, titre, description, debut, fin, prix_base, propose_par, image from objet join categorie on objet.categorie = categorie.id where categorie.id = "+categorie+" ";
 
             ResultSet resultats = st.executeQuery(query);
             System.out.println("Liste des objets :");
             while(resultats.next()){
-                //String nom_categorie = resultats.getString("categorie.nom");
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
                 String debut = resultats.getString("debut");
-                String fin = resultats.getString("fin");
+                String fin = resultats.getString("fin");              
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
-                System.out.println(" "+id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+propose_par);
+                System.out.println(id+" : "+titre+" "+description+" "+debut+" "+fin+" "+prix_base+" "+categorie+" "+propose_par);
                 //conversion image array byte -> image
                 byte[] byteImage = resultats.getBytes("image");
                 ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
                 BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base,newImage, propose_par));
+                listeObj.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
             }
             return listeObj;
         }
@@ -953,9 +1027,37 @@ public class GestionBdD {
         }
     }
     
+    public static String getTitreObjet(Connection con, int id)
+            throws SQLException{
+        ResultSet resultat;
+        String titre = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select titre from objet where id = "+id+" "
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                titre=resultat.getString("titre");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return titre;
+    }
     
     public static ObservableList rechercheObjetParMotCle(Connection con, String motCle)
-            throws SQLException, IOException{
+            throws SQLException, IOException, ClassNotFoundException{
         con.setAutoCommit(false);
         //initialisation de la liste
         ObservableList<Objet> listeObjets = FXCollections.observableArrayList();
@@ -1233,10 +1335,12 @@ public class GestionBdD {
             creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2,data, 1);
             creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2,data, 2);
             creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2,data, 3);
+            creeEnchere(con,"mardi",40,3,1);
+            creeEnchere(con,"aujourd'hui",40,3,2);
         }
     }
     
-    public static void menuTextuel(Connection con) throws IOException{
+    public static void menuTextuel(Connection con) throws IOException, ClassNotFoundException{
         //menu permettant à l'utilisateur de choisir une action à effectuer sur la BdD
         boolean stop = false; //condition d'arret
         while(stop==false){

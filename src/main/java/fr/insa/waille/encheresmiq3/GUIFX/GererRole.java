@@ -104,6 +104,8 @@ public class GererRole extends GridPane{
                 Logger.getLogger(CreerCat.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(GererRole.class.getName()).log(Level.SEVERE, null, ex);
             }
            
             

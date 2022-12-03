@@ -11,12 +11,14 @@ import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,21 +57,19 @@ import javax.swing.GroupLayout.Group;
  */
 public class Accueil extends GridPane {
     
-    public Accueil(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException{
+    public Accueil(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException, ClassNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
         logo.setStyle(" -fx-border-width:5px ;-fx-border-style: solid; -fx-border-color: orange; ");
-        Label titre = new Label("LeMauvaisCoin");
-        titre.setStyle("-fx-max-width: 100");
-        titre.setStyle("-fx-font-weight: bold");
         Label Lrecherche = new Label("Entrez un mot clé");
         TextField Frecherche = new TextField();
         Button Brecherche = new Button("Rechercher");
         Label Lcategorie = new Label("Catégories");
         Button Bcategorie = new Button("Par catégorie");
         Label panneau = new Label();
-        Button Badmin = new Button("Gérer les rôles");
+        Button Bactualiser = new Button("Actualiser le tableau");
+        
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -83,38 +83,7 @@ public class Accueil extends GridPane {
         listeCategorie.getItems().setAll(categories);
         
         ObservableList<Objet> listeAllObj = rechercheObjetParMotCle(con,"");
-        TableView<Objet> table = new TableView<Objet>();
-            //remplissage de la table avec les objets
-            table.setItems(listeAllObj);
-            
-            //configuration de la table
-            table.setEditable(true);
-            
-            //création des colonnes du tableau
-            TableColumn coltitre = new TableColumn("Titre");
-            TableColumn coldescription = new TableColumn("Description");
-            TableColumn colprix = new TableColumn("Prix (en €)");
-            TableColumn colvoirplus = new TableColumn("Action");
-            coltitre.setMinWidth(200);
-            coldescription.setMinWidth(200);
-            colprix.setMinWidth(200);
-            coltitre.setCellValueFactory(
-                    new PropertyValueFactory<Objet, String>("titre"));
-
-            coldescription.setCellValueFactory(
-                    new PropertyValueFactory<Objet, String>("description"));
-
-            colprix.setCellValueFactory(
-                    new PropertyValueFactory<Objet, String>("prix_base"));
-            
-            colvoirplus.setCellValueFactory(
-                    new PropertyValueFactory<Objet, String>("Bvoirplus"));
-
-            table.getColumns().setAll(coltitre, coldescription, colprix,colvoirplus);
-            
-            table.setItems(listeAllObj);
-            //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
-            this.add(table, 0, 5,5,1); 
+        affichageResultats(con,listeAllObj);
             
         // Create MenuBar
         MenuBar leftBar = new MenuBar();
@@ -182,7 +151,9 @@ public class Accueil extends GridPane {
         this.add(Lcategorie,0,3);
         this.add(listeCategorie,1,3);
         this.add(Bcategorie,2,3);
-        this.add(panneau,0,5);  
+        this.add(Bactualiser,3,3);
+        this.add(panneau,0,5);
+        
         
         
         
@@ -204,6 +175,34 @@ public class Accueil extends GridPane {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            this.affichageResultats(con, listeObjet);
+                
+            
+        });
+        
+        //action de l'appui sur le bouton recherche par catégorie
+        Bcategorie.setOnAction((t) ->{
+            //recupere la catégorie sélectionnée par l'utilisateur
+            String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
+            int idcat = 0;
+            try {
+                idcat = getIdCategorie(con,categorie);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            ObservableList<Objet> listeObjet = null;
+            try {
+                //recupère la liste des objets de cette catégorie :
+                listeObjet = rechercheObjetParCategorie(con,idcat);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.affichageResultats(con, listeObjet);
                 
@@ -211,20 +210,18 @@ public class Accueil extends GridPane {
         });
         
         //action de l'appui sur le bouton recherche
-        Brecherche.setOnAction((t) ->{
-            //recupere le mot clé saisi par l'utilisateur
-            String motcle = Frecherche.getText(); 
-            ObservableList<Objet> listeObjet = null;
+        Bactualiser.setOnAction((t) ->{
+            ObservableList listeObjets;
             try {
-                //recupère la liste des objets :
-                listeObjet = rechercheObjetParMotCle(con,motcle);
+                affichageResultats(con,listeObjets=rechercheObjetParMotCle(con,""));
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
-            this.affichageResultats(con, listeObjet);
-            Frecherche.setText("");          
+            
         });
         
         //action de l'appui sur le bouton créer catégorie
@@ -285,6 +282,12 @@ public class Accueil extends GridPane {
                 sc7 = new Scene(new MesObjets(stage,con));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage.setScene(sc7);
     
@@ -297,6 +300,10 @@ public class Accueil extends GridPane {
             try {
                 sc8 = new Scene(new MesEncheres(stage,con));
             } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage.setScene(sc8);
@@ -338,11 +345,13 @@ public class Accueil extends GridPane {
             //création des colonnes du tableau
             TableColumn coltitre = new TableColumn("Titre");
             TableColumn coldescription = new TableColumn("Description");
-            TableColumn colprix = new TableColumn("Prix (en €)");
+            TableColumn colprix = new TableColumn("Prix de base");
+            TableColumn colprixact = new TableColumn("Prix actuel");
             TableColumn colvoirplus = new TableColumn("Action");
-            coltitre.setMinWidth(200);
-            coldescription.setMinWidth(200);
-            colprix.setMinWidth(200);
+            coltitre.setMinWidth(150);
+            coldescription.setMinWidth(150);
+            colprix.setMinWidth(150);
+            colprixact.setMinWidth(150);
             coltitre.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("titre"));
 
@@ -352,14 +361,17 @@ public class Accueil extends GridPane {
             colprix.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("prix_base"));
             
+            colprixact.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("prix_actuel"));
+            
             colvoirplus.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("Bvoirplus"));
 
-            table.getColumns().setAll(coltitre, coldescription, colprix,colvoirplus);
+            table.getColumns().setAll(coltitre, coldescription, colprix,colprixact, colvoirplus);
             
             table.setItems(listeObjet);
             //ajout de la table à la fenêtre (sur 4 colonnes et 1 ligne)
-            this.add(table, 0, 6,5,1);                  
+            this.add(table, 0, 5,5,1);                  
     }
     
     
