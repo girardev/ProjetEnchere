@@ -40,7 +40,7 @@ public class MesEncheres extends GridPane{
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 1, 0);
+        this.add(logo, 2, 0);
         this.add(Lobj,1,1);
         this.add(Bretour,1,2);
         

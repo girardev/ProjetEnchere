@@ -6,6 +6,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPassUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateur;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -123,19 +124,24 @@ public class GridPaneAuthentification extends GridPane {
             
             
             //utilisation recherche du mot de passe d'un email
-            try(Statement st1 = con.createStatement()){
-                String query1 = "select pass from utilisateur where email like '"+email2+"' ";
-                ResultSet resultat = st1.executeQuery(query1);
-                String motdepasse = "";
-                while(resultat.next()){
-                motdepasse = resultat.getString("pass");
-                }
+            
+                String motdepasse = null;
+            try {
+                motdepasse = getPassUtilisateur(con,email2);
+            } catch (SQLException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            }
                 
                 if(motdepasse.equals(pass2)){          
                     Femail2.setText("");
                     Fpass2.setText("");
                     
-                    String role= getRoleUtilisateur(con,email2);
+                    String role = null;
+                try {
+                    role = getRoleUtilisateur(con,email2);
+                } catch (SQLException ex) {
+                    Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+                }
                     
                     try {
                         creeUtilisateurEnCours(con,email2,pass2,role);
@@ -143,7 +149,16 @@ public class GridPaneAuthentification extends GridPane {
                         Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     
-                    Scene sc2 = new Scene(new Accueil(stage, con));
+                    Scene sc2 = null;
+                try {
+                    sc2 = new Scene(new Accueil(stage, con));
+                } catch (SQLException ex) {
+                    Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+                }
                     stage.setScene(sc2);
                 }
                 else{
@@ -152,15 +167,6 @@ public class GridPaneAuthentification extends GridPane {
                     Fpass2.setText("");                    
                 }
             
-            } catch (SQLException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (FileNotFoundException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IOException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
-                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
-            }
         });
 
     }

@@ -362,6 +362,64 @@ public class GestionBdD {
         return id;
     }
     
+    public static String getPassUtilisateur(Connection con, String email)
+            throws SQLException{
+        ResultSet resultat;
+        String pass = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select pass from utilisateur where email like'"+email+"'"
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                pass=resultat.getString("pass");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return pass;
+    }
+    
+    public static String getCodePostalUtilisateur(Connection con, String email)
+            throws SQLException{
+        ResultSet resultat;
+        String code = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select code_postal from utilisateur where email like'"+email+"'"
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                code=resultat.getString("code_postal");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return code;
+    }
+    
     public static String getRoleUtilisateur(Connection con, String email)
             throws SQLException{
         ResultSet resultat;
@@ -462,6 +520,23 @@ public class GestionBdD {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
         "update utilisateur set role = '"+role+"' where email like '"+email+"' "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
+    public static void ModifierPassUtilisateur(Connection con,String email,String pass)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        "update utilisateur set pass = '"+pass+"' where email like '"+email+"' "))
         {
             pst.executeUpdate();
             con.commit();

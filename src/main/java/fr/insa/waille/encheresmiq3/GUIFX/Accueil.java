@@ -93,6 +93,7 @@ public class Accueil extends GridPane {
         Menu creationMenu = new Menu("Création");
         Menu espaceMenu = new Menu("Mon espace");
         Menu gestionMenu = new Menu("Gestion");
+        Menu profilMenu = new Menu("Mon profil");
         Menu quitterMenu = new Menu("Quitter");
         
         
@@ -102,6 +103,8 @@ public class Accueil extends GridPane {
         MenuItem mesencheres = new MenuItem("Mes enchères");
         MenuItem mesobjets = new MenuItem("Mes objets");
         MenuItem gestionrole = new MenuItem("Gestion des rôles");
+        MenuItem voirprofil = new MenuItem("Voir mon profil");
+        MenuItem changermdp = new MenuItem("Changer mon mot de passe");
         MenuItem deco = new MenuItem("Déconnexion");
         MenuItem fermer = new MenuItem("Fermer");
         
@@ -109,7 +112,7 @@ public class Accueil extends GridPane {
         // Add Menus to the MenuBar
         leftBar.getMenus().addAll(creationMenu,espaceMenu);
         
-        rightBar.getMenus().addAll(quitterMenu);
+        rightBar.getMenus().addAll(profilMenu,quitterMenu);
         
         Region spacer = new Region();
         spacer.getStyleClass().add("menu-bar");
@@ -136,7 +139,7 @@ public class Accueil extends GridPane {
         }
         
         espaceMenu.getItems().addAll(mesencheres,mesobjets);
-        
+        profilMenu.getItems().addAll(voirprofil,changermdp);
         quitterMenu.getItems().addAll(deco,fermer);
         
         this.add(menubars,0,0,10,1);
@@ -303,6 +306,41 @@ public class Accueil extends GridPane {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage.setScene(sc8);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        voirprofil.setOnAction((t) ->{
+               
+            Scene sc9 = null;
+            try {
+                sc9 = new Scene(new Profil(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            stage.setScene(sc9);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        changermdp.setOnAction((t) ->{
+               
+            Scene sc10 = null;
+            try {
+                sc10 = new Scene(new ChangerMDP(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            stage.setScene(sc10);
     
         });
         

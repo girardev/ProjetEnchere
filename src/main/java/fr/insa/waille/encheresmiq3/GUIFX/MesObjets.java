@@ -40,7 +40,7 @@ public class MesObjets extends GridPane{
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 0, 0);
+        this.add(logo, 2, 0);
         this.add(Lobj,0,1);
         this.add(Bretour,0,2);
         
