@@ -51,11 +51,8 @@ public class Objet {
 
     //constructeurs
     public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base, BufferedImage image, int propose_par, int prix_base2) throws ClassNotFoundException, SQLException {
-        try {
-            this.con = defautConnect();
-        } catch (SQLException ex) {
-            Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
+        this.con = defautConnect();
         this.id = id;
         this.titre = titre;
         this.description = description;

@@ -32,7 +32,7 @@ import javafx.stage.Stage;
  */
 public class MesEncheres extends GridPane{
 
-    public MesEncheres(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException{
+    public MesEncheres(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException, ClassNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
@@ -58,9 +58,13 @@ public class MesEncheres extends GridPane{
             TableColumn colquand = new TableColumn("Quand");
             TableColumn colmontant = new TableColumn("Montant");
             TableColumn colsur = new TableColumn("Sur");
-            colquand.setMinWidth(200);
-            colmontant.setMinWidth(200);
-            colsur.setMinWidth(200);
+            TableColumn colfin = new TableColumn("Clôture");
+            TableColumn colmeilleur = new TableColumn("Possession");
+            colquand.setMinWidth(100);
+            colmontant.setMinWidth(100);
+            colsur.setMinWidth(100);
+            colfin.setMinWidth(100);
+            colmeilleur.setMinWidth(100);
             colquand.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("quand"));
 
@@ -69,8 +73,12 @@ public class MesEncheres extends GridPane{
             
             colsur.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("objet"));
-
-            table.getColumns().setAll(colquand, colmontant, colsur);
+            colfin.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("fin"));
+            colmeilleur.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("meilleur"));
+            
+            table.getColumns().setAll(colquand, colmontant, colsur,colfin,colmeilleur);
             
             table.setItems(listeAllEnchere);
             //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)

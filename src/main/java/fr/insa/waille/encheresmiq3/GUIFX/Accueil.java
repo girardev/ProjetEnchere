@@ -161,7 +161,6 @@ public class Accueil extends GridPane {
         Brecherche.setOnAction((t) ->{
             //recupere la catégorie sélectionnée par l'utilisateur
             String motcle = Frecherche.getText();
-            int idcat = 0;
             ObservableList<Objet> listeObjet = null;
             try {
                 //recupère la liste des objets de cette catégorie :
@@ -299,6 +298,8 @@ public class Accueil extends GridPane {
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             }
             stage.setScene(sc8);

@@ -679,7 +679,7 @@ public class GestionBdD {
     }
     
     public static ObservableList rechercheEnchereParUtilisateur(Connection con,int idUser)
-            throws SQLException, IOException{
+            throws SQLException, IOException, ClassNotFoundException{
         con.setAutoCommit(false);
         ObservableList<Enchere> listeEnchere = FXCollections.observableArrayList();
         try(Statement st = con.createStatement()){
@@ -902,6 +902,39 @@ public class GestionBdD {
         }
         return listeObjets;
     }
+    
+    public static String getFinObjet(Connection con, int idObj)
+            throws SQLException{
+        ResultSet resultat;
+        String fin = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+            resultat = st.executeQuery(
+                    """
+                    ---ordre SQL pour récupérer la liste des roles ;
+                    select fin from objet where id = """+idObj+"""
+                                                             
+                    """
+            );
+            //sauvegarde les résultats
+            while(resultat.next()){
+                fin = resultat.getString("fin");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return fin;
+    } 
     
     public static ObservableList rechercheObjetParUtilisateur(Connection con,int idUser)
             throws SQLException, IOException, ClassNotFoundException{
