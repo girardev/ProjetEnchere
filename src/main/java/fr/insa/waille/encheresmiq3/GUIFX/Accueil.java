@@ -158,19 +158,14 @@ public class Accueil extends GridPane {
         
         
         //action de l'appui sur le bouton recherche par catégorie
-        Bcategorie.setOnAction((t) ->{
+        Brecherche.setOnAction((t) ->{
             //recupere la catégorie sélectionnée par l'utilisateur
-            String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
+            String motcle = Frecherche.getText();
             int idcat = 0;
-            try {
-                idcat = getIdCategorie(con,categorie);
-            } catch (SQLException ex) {
-                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-            }
             ObservableList<Objet> listeObjet = null;
             try {
                 //recupère la liste des objets de cette catégorie :
-                listeObjet = rechercheObjetParCategorie(con,idcat);
+                listeObjet = rechercheObjetParMotCle(con,motcle);
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
