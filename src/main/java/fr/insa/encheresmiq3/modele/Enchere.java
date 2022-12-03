@@ -4,14 +4,11 @@
  */
 package fr.insa.encheresmiq3.modele;
 
-import fr.insa.waille.encheresmiq3.GUIFX.GridPaneAuthentification;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getFinObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
