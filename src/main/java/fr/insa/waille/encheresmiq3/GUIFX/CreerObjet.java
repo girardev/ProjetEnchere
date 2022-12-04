@@ -11,6 +11,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getCategories;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -29,13 +30,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.sql.Timestamp;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 /**
  *
  * @author valen
  */
 public class CreerObjet extends GridPane{
-
+    
+    File img;  //fichier correspondant à l'image sélectionnée pour l'objet
+    
     public CreerObjet(Stage stage, Connection con) throws FileNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
@@ -54,6 +59,7 @@ public class CreerObjet extends GridPane{
         DatePicker Dfin = new DatePicker();
         Label Lprix = new Label("Prix");
         TextField Fprix = new TextField();
+        Button Bimage = new Button("Sélectionner une image");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
         ComboBox listeCategorie = new ComboBox();
@@ -93,14 +99,35 @@ public class CreerObjet extends GridPane{
         this.add(Lprix,0,6);
         this.add(Fprix,1,6);
         this.add(listeCategorie,1,7);
-        this.add(panneau,1,8);
-        this.add(Bcreerobj,1,9);
-        this.add(Bretour,0,9);
+        this.add(Bimage,1,8);
+        this.add(panneau,1,9);
+        this.add(Bcreerobj,1,10);
+        this.add(Bretour,0,10);
+        
+        
+        //action de l'appui sur le bouton ajout image
+        Bimage.setOnAction((t) ->{
+            //SELECTEUR DE FICHIERS (IMAGE)
+            FileChooser imgChooser = new FileChooser();
+//            ExtensionFilter ef = new ExtensionFilter("Image Files","*.png"); //ne fonctionne pas
+            imgChooser.setTitle("Sélectionner une image");
+            img = imgChooser.showOpenDialog(stage);
+            String path = img.getAbsolutePath();
+            if(img==null){
+                panneau.setText("aucune image sélectionnée");
+            }            
+            else{
+                panneau.setText("image ajoutée");
+            }
+            
+        });
         
         //action de l'appuie sur le bouton creer objet
         Bcreerobj.setOnAction((t) ->{
             String titre = Ftitre.getText();
             String description = Fdesc.getText();
+            
+            //RECUPERATION DES DATES/HEURES D'ENCHERE
             LocalDate debut = Ddebut.getValue(); //récupère date picker
             String datedebut = debut.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             String heuredebut = (String) listeHeureD.getSelectionModel().getSelectedItem();
@@ -123,7 +150,6 @@ public class CreerObjet extends GridPane{
             } catch (SQLException ex) {
                 Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
             int propose_par = -1;
             String email = null;
             
@@ -139,7 +165,7 @@ public class CreerObjet extends GridPane{
                 //utilisation de la fonction creeObjet
                 try {
                     try {
-                        creeObjetImage(con,titre,description,datedebut,datefin,prix,categorieInt,propose_par, "logo_lemauvaiscoin.png");
+                        creeObjetImage(con,titre,description,datedebut,datefin,prix,categorieInt, propose_par, img);
                     } catch (IOException ex) {
                         Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
                     }
