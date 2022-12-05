@@ -56,15 +56,12 @@ public class ObjetPlus extends GridPane{
     int prix_base = obj.getPrix_base();
     int categorie = obj.getCategorie();
     int propose_par = obj.getPropose_par();
-    BufferedImage bfimage = obj.getImage();
-    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    ImageIO.write(bfimage, "png", bos );
-    byte [] data = bos.toByteArray();
-    InputStream is = new ByteArrayInputStream(data);
-    Image img = new Image(is);
-    ImageView imageView = new ImageView(img);
-    imageView.setFitHeight(75);
-    imageView.setFitWidth(185);
+    
+    //affichage de l'image correspondante
+    ImageView imageView = recupererImage(obj);
+    //dimensions de l'image :
+    imageView.setFitHeight(150);
+    imageView.setFitWidth(300);
     Label imageObjet = new Label("",imageView);
     
     Label Ltitre = new Label("Titre : ");
@@ -121,7 +118,7 @@ public class ObjetPlus extends GridPane{
     this.add(ShowPropose_par,1,9);
     this.add(Bprop,3,1);
     this.add(panneau,3,2);
-    this.add(imageObjet, 0, 10);
+    this.add(imageObjet, 0, 10,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
     
     //action de l'appuie sur le bouton enchere
     Bprop.setOnAction((t) ->{
@@ -179,5 +176,17 @@ public class ObjetPlus extends GridPane{
     
     
     
+    }
+    
+    public static ImageView recupererImage(Objet obj) throws IOException{
+        //récupère l'image associée à l'objet
+        BufferedImage bfimage = obj.getImage();
+        //conversion dans le bon type :
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(bfimage, "png", bos );
+        byte [] data = bos.toByteArray();
+        InputStream is = new ByteArrayInputStream(data);
+        Image img = new Image(is);
+        return (new ImageView(img));
     }
 }

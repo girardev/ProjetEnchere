@@ -45,7 +45,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -956,11 +956,9 @@ public class GestionBdD {
                 int categorie = resultat.getInt("categorie");
                 int prix_base = resultat.getInt("prix_base"); 
                 int propose_par = resultat.getInt("propose_par");
-                //conversion image array byte -> image
-                byte[] byteImage = resultat.getBytes("image");
-                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
-                BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par,prix_base));
+                //récupération du tableau de bytes codant l'image :
+                byte[] byteImg = resultat.getBytes("image");
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par,prix_base));
             }
         }
         catch (SQLException ex) {
@@ -976,6 +974,19 @@ public class GestionBdD {
             con.setAutoCommit(true);
         }
         return listeObjets;
+    }
+    
+    //méthodes pour la conversion d'image dans le bon type :
+    public static BufferedImage conversionByteToImg(byte[] byteImage) throws IOException{
+        ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
+        BufferedImage image = ImageIO.read(inStreambj);
+        return image;
+    }
+    public static byte[] conversionImgToByte(BufferedImage image) throws IOException{
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", bos );
+        byte [] byteArray = bos.toByteArray();
+        return byteArray;
     }
     
     public static String getFinObjet(Connection con, int idObj)
@@ -1031,9 +1042,7 @@ public class GestionBdD {
                 int propose_par = resultats.getInt("propose_par");
                 //conversion image array byte -> image
                 byte[] byteImage = resultats.getBytes("image");
-                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
-                BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base,newImage, propose_par));
+                listeObj.add(new Objet(id,titre,description,debut, fin,categorie,prix_base,conversionByteToImg(byteImage), propose_par));
             }
             return listeObj;
         }
@@ -1113,11 +1122,9 @@ public class GestionBdD {
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 
-                //conversion image array byte -> image
-                byte[] byteImage = resultats.getBytes("image");
-                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
-                BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObj.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
+                //récupération du tableau de bytes codant l'image :
+                byte[] byteImg = resultats.getBytes("image");
+                listeObj.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
             }
             return listeObj;
         }
@@ -1185,11 +1192,9 @@ public class GestionBdD {
                 int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
                 
-                //conversion image array byte -> image
-                byte[] byteImage = resultats.getBytes("image");
-                ByteArrayInputStream inStreambj = new ByteArrayInputStream(byteImage);
-                BufferedImage newImage = ImageIO.read(inStreambj);
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,newImage,propose_par));
+                //récupération du tableau de bytes codant l'image :
+                byte[] byteImg = resultats.getBytes("image");
+                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
             }
         }
         catch (SQLException ex) {
@@ -1206,7 +1211,8 @@ public class GestionBdD {
         }
         return listeObjets;
     }
-
+    
+    //crée un objet avec image donnée sous forme de tableau de bytes 
     public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie, byte[]image, int propose_par)
             throws SQLException {
         con.setAutoCommit(false);
@@ -1234,15 +1240,13 @@ public class GestionBdD {
         }
     }
     
-        public static void creeObjetImage(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par, String path)
+    
+    //crée un objet avec image donnée sous la forme : nom du fichier
+        public static void creeObjetImage(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par, File file)
             throws SQLException, IOException {
         con.setAutoCommit(false);
-        //test :
-        File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\logo_lemauvaiscoin.png");
         BufferedImage img = ImageIO.read(file);
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ImageIO.write(img, "png", bos );
-        byte [] data = bos.toByteArray();
+        byte[] data = conversionImgToByte(img);
         try (PreparedStatement pst = con.prepareStatement(
         """
                     insert into objet (titre, description, debut, fin, prix_base, categorie, propose_par, image)
@@ -1429,11 +1433,9 @@ public class GestionBdD {
             creeCategorie(con, "meubles");
             creeCategorie(con, "habits");
             creeCategorie(con, "alcools");
-            File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.jpg");
+            File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.png");
             BufferedImage img = ImageIO.read(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ImageIO.write(img, "jpg", bos );
-            byte [] data = bos.toByteArray();
+            byte [] data = conversionImgToByte(img);
             creeObjet(con, "oettinger", "biere de luxe et rentable", "lundi", "vendredi", 1, 3,data, 1);
             creeObjet(con, "jack_daniel", "whisky de luxe", "lundi", "jeudi", 20, 3,data, 2);
             creeObjet(con, "gin", "bien deg", "mardi", "jeudi", 15, 3,data, 3);
