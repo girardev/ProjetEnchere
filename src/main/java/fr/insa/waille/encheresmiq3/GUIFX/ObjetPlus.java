@@ -27,6 +27,7 @@ import static java.time.LocalDate.now;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -89,6 +90,7 @@ public class ObjetPlus extends GridPane{
     Label panneau = new Label();
     TextField TnouvPrix = new TextField();
     Button Bencherir = new Button("Enchérir");
+    Button Bretour = new Button("Retour accueil");
     
     Label ShowTitre = new Label(titre);
     Label ShowDescription = new Label(description);
@@ -119,6 +121,7 @@ public class ObjetPlus extends GridPane{
     this.add(Bprop,3,1);
     this.add(panneau,3,2);
     this.add(imageObjet, 0, 10,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
+    this.add(Bretour,4,10);
     
     //action de l'appuie sur le bouton enchere
     Bprop.setOnAction((t) ->{
@@ -174,7 +177,11 @@ public class ObjetPlus extends GridPane{
         }
     });
     
-    
+        //action de l'appui sur le bouton retour
+    Bretour.setOnAction((var t) ->{
+        //ferme la fenêtre ouverte : retour à la fenêtre principale (accueil)
+        stage.close();
+    });
     
     }
     
