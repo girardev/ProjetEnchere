@@ -4,11 +4,16 @@
  */
 package fr.insa.encheresmiq3.modele;
 
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.SupprimerEnchere;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getFinObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.control.Button;
 
 /**
  *
@@ -23,7 +28,9 @@ public class Enchere {
     private String objet;
     private String fin;
     private String meilleur;
+    private Button Bsupprimer;
     Connection con;
+    private String par;
         
 
     public Enchere(int id, String quand, int montant, int de, int sur,String objet) throws ClassNotFoundException, SQLException {
@@ -37,6 +44,27 @@ public class Enchere {
         this.fin=getFinObjet(con,sur);
         if(getPrixMaxSurObjet(con,sur)==montant){this.meilleur="Oui";}
         else{this.meilleur="Non";}
+        this.Bsupprimer=new Button("Supprimer");
+        this.par=getEmailUtilisateur(con,de);
+        
+        //action de l'appui sur le bouton supprimer
+        Bsupprimer.setOnAction((t) ->{
+            
+            try {
+                con = defautConnect();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Enchere.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Enchere.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            try {
+                SupprimerEnchere(con,id);
+            } catch (SQLException ex) {
+                Logger.getLogger(Enchere.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        });
     }
     
     public int getId() {
@@ -71,6 +99,14 @@ public class Enchere {
         return meilleur;
     }
     
+    public Button getBsupprimer() {
+        return Bsupprimer;
+    }
+    
+    public String getPar() {
+        return par;
+    }
+    
     public void setId(int id) {
         this.id = id;
     }
@@ -101,6 +137,14 @@ public class Enchere {
     
     public void setMeilleur(String meilleur) {
         this.meilleur = meilleur;
+    }
+    
+    public void setBsupprimer(Button Bsupprimer) {
+        this.Bsupprimer = Bsupprimer;
+    }
+    
+    public void setPar(String par) {
+        this.par = par;
     }
     
 }

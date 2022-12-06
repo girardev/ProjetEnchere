@@ -103,6 +103,7 @@ public class Accueil extends GridPane {
         MenuItem mesencheres = new MenuItem("Mes enchères");
         MenuItem mesobjets = new MenuItem("Mes objets");
         MenuItem gestionrole = new MenuItem("Gestion des rôles");
+        MenuItem gestionenchere = new MenuItem("Gestion des enchères");
         MenuItem voirprofil = new MenuItem("Voir mon profil");
         MenuItem changermdp = new MenuItem("Changer mon mot de passe");
         MenuItem deco = new MenuItem("Déconnexion");
@@ -129,6 +130,7 @@ public class Accueil extends GridPane {
         if(role.equals("Admin")){
             leftBar.getMenus().addAll(gestionMenu);
             gestionMenu.getItems().addAll(gestionrole);
+            gestionMenu.getItems().addAll(gestionenchere);
         }
         if(role.equals("Admin")||role.equals("Categorie")){
             creationMenu.getItems().addAll(creerobj,creercat);
@@ -206,7 +208,7 @@ public class Accueil extends GridPane {
             
         });
         
-        //action de l'appui sur le bouton recherche
+        //action de l'appui sur le bouton actualiser
         Bactualiser.setOnAction((t) ->{
             ObservableList listeObjets;
             try {
@@ -271,7 +273,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton mes OBJET
         mesobjets.setOnAction((t) ->{
                
             Scene sc7 = null;
@@ -290,7 +292,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton mes encheres
         mesencheres.setOnAction((t) ->{
                
             Scene sc8 = null;
@@ -309,7 +311,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton mon profil
         voirprofil.setOnAction((t) ->{
                
             Scene sc9 = null;
@@ -326,7 +328,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton changer mdp
         changermdp.setOnAction((t) ->{
                
             Scene sc10 = null;
@@ -348,6 +350,22 @@ public class Accueil extends GridPane {
         fermer.setOnAction((t) ->{
                
            System.exit(0);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        gestionenchere.setOnAction((t) ->{
+               
+            Scene sc11 = null;
+            try {
+                sc11 = new Scene(new GererEnchere(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException | ClassNotFoundException | IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            stage.setScene(sc11);
     
         });
         

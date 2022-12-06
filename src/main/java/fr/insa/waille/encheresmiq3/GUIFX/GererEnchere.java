@@ -7,9 +7,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheEnchereParUtilisateur;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParUtilisateur;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheAllEnchere;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -30,9 +28,9 @@ import javafx.stage.Stage;
  *
  * @author valen
  */
-public class MesEncheres extends GridPane{
+public class GererEnchere extends GridPane{
 
-    public MesEncheres(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException, ClassNotFoundException{
+    public GererEnchere(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException, ClassNotFoundException{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
@@ -47,9 +45,7 @@ public class MesEncheres extends GridPane{
         this.add(Bactualiser,3,2);
         
         
-        String email = getEmailUtilisateurEnCours(con);
-        int idUser = getIdUtilisateur(con,email);
-        ObservableList<Objet> listeAllEnchere = rechercheEnchereParUtilisateur(con,idUser);
+        ObservableList<Objet> listeAllEnchere = rechercheAllEnchere(con);
         affichageResultats(con,listeAllEnchere);
         
         //action de l'appui sur le bouton retour
@@ -73,10 +69,9 @@ public class MesEncheres extends GridPane{
         
         //action de l'appui sur le bouton actualiser
         Bactualiser.setOnAction((t) ->{
-            
             ObservableList listeAll;
             try {
-                affichageResultats(con,listeAll=rechercheEnchereParUtilisateur(con,idUser));
+                affichageResultats(con,listeAll=rechercheAllEnchere(con));
             } catch (SQLException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
@@ -88,50 +83,51 @@ public class MesEncheres extends GridPane{
         });
         
     }
+    
     //affiche la liste des objets sélectionnés dans une TableView :
     public void affichageResultats(Connection con, ObservableList<Objet> listeAllEnchere){
+        
         TableView<Objet> table = new TableView<Objet>();
-                //remplissage de la table avec les objets
-                table.setItems(listeAllEnchere);
+            //remplissage de la table avec les objets
+            table.setItems(listeAllEnchere);
+            
+            //configuration de la table
+            table.setEditable(true);
+            
+            //création des colonnes du tableau
+            TableColumn colquand = new TableColumn("Quand");
+            TableColumn colmontant = new TableColumn("Montant");
+            TableColumn colsur = new TableColumn("Sur");
+            TableColumn colfin = new TableColumn("Clôture");
+            TableColumn colpar = new TableColumn("Par");
+            TableColumn colaction = new TableColumn("Action");
+            colquand.setMinWidth(100);
+            colmontant.setMinWidth(50);
+            colsur.setMinWidth(100);
+            colfin.setMinWidth(100);
+            colpar.setMinWidth(225);
+            colaction.setMinWidth(100);
+            colquand.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("quand"));
 
-                //configuration de la table
-                table.setEditable(true);
-
-                //création des colonnes du tableau
-                TableColumn colquand = new TableColumn("Quand");
-                TableColumn colmontant = new TableColumn("Montant");
-                TableColumn colsur = new TableColumn("Sur");
-                TableColumn colfin = new TableColumn("Clôture");
-                TableColumn colmeilleur = new TableColumn("Possession");
-                TableColumn colaction = new TableColumn("Action");
-                colquand.setMinWidth(125);
-                colmontant.setMinWidth(100);
-                colsur.setMinWidth(125);
-                colfin.setMinWidth(125);
-                colmeilleur.setMinWidth(100);
-                colaction.setMinWidth(100);
-                colquand.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("quand"));
-
-                colmontant.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("montant"));
-
-                colsur.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("objet"));
-                
-                colfin.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("fin"));
-                
-                colmeilleur.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("meilleur"));
-                
-                colaction.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("Bsupprimer"));
-
-                table.getColumns().setAll(colquand, colmontant, colsur,colfin,colmeilleur,colaction);
-
-                table.setItems(listeAllEnchere);
-                //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
-                this.add(table, 0, 5,5,1);
+            colmontant.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("montant"));
+            
+            colsur.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("objet"));
+            colfin.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("fin"));
+            colpar.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("par"));
+            colaction.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("Bsupprimer"));
+            table.getColumns().setAll(colquand, colmontant, colsur,colfin, colpar,colaction);
+            
+            table.setItems(listeAllEnchere);
+            //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
+            this.add(table, 0,5,5,1);
+                           
     }
+    
+    
 }

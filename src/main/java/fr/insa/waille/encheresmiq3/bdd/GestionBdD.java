@@ -391,6 +391,35 @@ public class GestionBdD {
         return pass;
     }
     
+    public static String getEmailUtilisateur(Connection con, int id)
+            throws SQLException{
+        ResultSet resultat;
+        String email = null;
+        con.setAutoCommit(false);
+        try(Statement st = con.createStatement()){
+           resultat = st.executeQuery(
+                   "select email from utilisateur where id = "+id+""
+           );
+           //sauvegarde les résultats
+            while(resultat.next()){
+                email=resultat.getString("email");
+            }
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+        return email;
+    }
+    
     public static String getCodePostalUtilisateur(Connection con, String email)
             throws SQLException{
         ResultSet resultat;
@@ -787,7 +816,56 @@ public class GestionBdD {
         }
     }
     
+    public static ObservableList rechercheAllEnchere(Connection con)
+            throws SQLException, IOException, ClassNotFoundException{
+        con.setAutoCommit(false);
+        ObservableList<Enchere> listeEnchere = FXCollections.observableArrayList();
+        try(Statement st = con.createStatement()){
+            String query = "select * from enchere ";
+
+            ResultSet resultats = st.executeQuery(query);
+            while(resultats.next()){
+                //String nom_categorie = resultats.getString("categorie.nom");
+                int id = resultats.getInt("id");
+                String quand = resultats.getString("quand");
+                int montant = resultats.getInt("montant");
+                int de = resultats.getInt("de");
+                int sur = resultats.getInt("sur");
+                String objet = getTitreObjet(con,sur);
+                listeEnchere.add(new Enchere(id,quand,montant,de,sur,objet));
+            }
+            return listeEnchere;
+        }
+        catch (SQLException ex) {
+            // quelque chose s'est mal passé
+            // j'annule la transaction
+            con.rollback();
+            // puis je renvoie l'exeption pour qu'elle puisse éventuellement
+            // être gérée (message à l'utilisateur...)
+            throw ex;
+        } finally {
+            // je reviens à la gestion par défaut : une transaction pour
+            // chaque ordre SQL
+            con.setAutoCommit(true);
+        }
+    }
     
+    public static void SupprimerEnchere(Connection con,int idench)
+            throws SQLException {
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        "delete from enchere where id = "+idench+" "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
     
     public static void afficheCategorie(Connection con)
             throws SQLException{

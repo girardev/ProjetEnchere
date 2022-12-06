@@ -59,6 +59,8 @@ public class CreerObjet extends GridPane{
         DatePicker Dfin = new DatePicker();
         Label Lprix = new Label("Prix");
         TextField Fprix = new TextField();
+        Label Lcategorie = new Label("Catégorie");
+        Label Limage = new Label("Image");
         Button Bimage = new Button("Sélectionner une image");
         
         //AFFICHAGE DE LA LISTE DES CATEGORIES
@@ -84,7 +86,7 @@ public class CreerObjet extends GridPane{
         Button Bretour = new Button("Retour à l'accueil");
         
         //AJOUT DES COMPOSANTS AU GRIDPANE
-        this.add(logo, 0, 0);
+        this.add(logo, 1, 0);
         this.add(Lajout,0,1);
         this.add(Ltitre,0,2);
         this.add(Ftitre,1,2);
@@ -98,7 +100,9 @@ public class CreerObjet extends GridPane{
         this.add(listeHeureF, 2, 5);
         this.add(Lprix,0,6);
         this.add(Fprix,1,6);
+        this.add(Lcategorie,0,7);
         this.add(listeCategorie,1,7);
+        this.add(Limage,0,8);
         this.add(Bimage,1,8);
         this.add(panneau,1,9);
         this.add(Bcreerobj,1,10);

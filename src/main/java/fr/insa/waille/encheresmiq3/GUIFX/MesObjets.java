@@ -62,7 +62,7 @@ public class MesObjets extends GridPane{
             TableColumn colvoirplus = new TableColumn("Action");
             coltitre.setMinWidth(150);
             coldescription.setMinWidth(150);
-            colprix.setMinWidth(150);
+            colprix.setMinWidth(50);
             colprixact.setMinWidth(150);
             coltitre.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("titre"));

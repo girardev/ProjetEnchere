@@ -90,7 +90,7 @@ public class ObjetPlus extends GridPane{
     Label panneau = new Label();
     TextField TnouvPrix = new TextField();
     Button Bencherir = new Button("Enchérir");
-    Button Bretour = new Button("Retour accueil");
+    Button Bretour = new Button("Retour");
     
     Label ShowTitre = new Label(titre);
     Label ShowDescription = new Label(description);
