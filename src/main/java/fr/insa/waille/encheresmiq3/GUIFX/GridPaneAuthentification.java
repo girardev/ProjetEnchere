@@ -16,12 +16,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 
@@ -32,27 +35,29 @@ import javafx.stage.Stage;
 public class GridPaneAuthentification extends GridPane {
 
     public GridPaneAuthentification(Stage stage,Connection con){
+        this.setStyle("-fx-background-color : #FEC98F");
+        
         //PARTIE INSCRIPTION
         //création des labels et champs de saisie
         Label titre = new Label("Inscription");
+        titre.setFont(new Font(20));
         titre.setStyle("-fx-max-width: 50");
         titre.setStyle("-fx-font-weight: bold");
         Label labelNom = new Label("Nom");
         TextField Fnom = new TextField();
         Label labelPrenom = new Label("Prénom");
         TextField Fprenom = new TextField();
-        Label labelPass = new Label("Mot de passe");
+        Label labelPass = new Label("Password");
         PasswordField Fpass = new PasswordField();
         Label labelEmail = new Label("Email");
         TextField Femail = new TextField();
-        Label labelCodePostal = new Label("Code postal");
+        Label labelCodePostal = new Label("Code postal ");
         TextField Fcodepostal = new TextField();
         Button B_Inscription = new Button("Inscription");
         Label panneau = new Label();
         
-        
         //ajout des composants au GridPane (colonne,ligne)
-        this.add(titre,0,0);
+        this.add(titre,1,0);
         this.add(labelNom, 0, 1);
         this.add(Fnom, 1, 1);
         this.add(labelPrenom, 0, 2);
@@ -66,7 +71,10 @@ public class GridPaneAuthentification extends GridPane {
         this.add(B_Inscription, 1, 6);  
         this.add(panneau,1,7);
         
-        //action de l'appuie sur le bouton inscription
+        //ajout de marges autour pour centrer
+        this.setPadding(new Insets(150-this.getHeight(), 100+this.getWidth(), 150+this.getHeight(), 100-this.getWidth()));
+        
+//action de l'appuie sur le bouton inscription
         B_Inscription.setOnAction((t) ->{
             String nom = Fnom.getText();
             String prenom = Fprenom.getText();
@@ -99,16 +107,17 @@ public class GridPaneAuthentification extends GridPane {
         //création des labels et champs de saisie
         Label titre2 = new Label("Connexion");
         titre2.setStyle("-fx-max-width: 50");
+        titre2.setFont(new Font(20));
         titre2.setStyle("-fx-font-weight: bold");
-        Label labelPass2 = new Label("password");
+        Label labelPass2 = new Label(" Password ");
         PasswordField Fpass2 = new PasswordField();
-        Label labelEmail2 = new Label("email");
+        Label labelEmail2 = new Label(" Email");
         TextField Femail2 = new TextField();
         Button B_Connexion = new Button("Connexion");
         Label panneau2 = new Label();
         
         //ajout des composants au GridPane (colonne,ligne)
-        this.add(titre2,2,0);
+        this.add(titre2,3,0);
         this.add(labelEmail2, 2, 1);
         this.add(Femail2, 3, 1);
         this.add(labelPass2, 2, 2);

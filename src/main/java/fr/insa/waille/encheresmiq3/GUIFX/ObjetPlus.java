@@ -119,9 +119,10 @@ public class ObjetPlus extends GridPane{
     this.add(Lpropose_par,0,9);
     this.add(ShowPropose_par,1,9);
     this.add(Bprop,3,1);
+    this.add(Bretour,4,1);
     this.add(panneau,3,2);
     this.add(imageObjet, 0, 10,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
-    this.add(Bretour,4,10);
+    
     
     //action de l'appuie sur le bouton enchere
     Bprop.setOnAction((t) ->{
