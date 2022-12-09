@@ -191,7 +191,7 @@ public class GridPaneAuthentification extends GridPane {
         Image i = new Image(image);
         ImageView imageView = new ImageView(i);
         imageView.setFitHeight(150);
-        imageView.setFitWidth(320);
+        imageView.setFitWidth(350);
         Label logo = new Label("",imageView);
         return logo;
     }

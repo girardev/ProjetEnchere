@@ -114,7 +114,8 @@ public class CreerObjet extends GridPane{
         Bimage.setOnAction((t) ->{
             //SELECTEUR DE FICHIERS (IMAGE)
             FileChooser imgChooser = new FileChooser();
-//            ExtensionFilter ef = new ExtensionFilter("Image Files","*.png"); //ne fonctionne pas
+            //ajoute un filtre pour ne sélectionner que les documents au format png
+            imgChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG", "*.png"));
             imgChooser.setTitle("Sélectionner une image");
             img = imgChooser.showOpenDialog(stage);
             String path = img.getAbsolutePath();

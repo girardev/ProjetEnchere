@@ -1510,8 +1510,11 @@ public class GestionBdD {
             creeUtilisateur(con, "varlet", "arthur", "azerty", "arthur.varlet@insa-strasbourg.fr", "37550","Admin" );
             creeUtilisateur(con, "girardet", "valentin", "pass", "valentin.girardet1@insa-strasbourg.fr", "38080","Admin" );
             creeCategorie(con, "meubles");
-            creeCategorie(con, "habits");
+            creeCategorie(con, "vêtements");
             creeCategorie(con, "alcools");
+            creeCategorie(con, "multimédia");
+            creeCategorie(con, "véhicules");
+            creeCategorie(con, "décoration");
             File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.png");
             BufferedImage img = ImageIO.read(file);
             byte [] data = conversionImgToByte(img);
