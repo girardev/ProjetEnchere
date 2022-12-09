@@ -268,7 +268,12 @@ public class Accueil extends GridPane {
         //action de l'appui sur le bouton deconnexion
         deco.setOnAction((t) ->{
                
-            Scene sc6 = new Scene(new GridPaneAuthentification(stage,con));
+            Scene sc6 = null;
+            try {
+                sc6 = new Scene(new GridPaneAuthentification(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
             stage.setScene(sc6);
     
         });

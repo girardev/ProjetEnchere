@@ -8,6 +8,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPassUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateur;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,6 +24,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -34,11 +37,12 @@ import javafx.stage.Stage;
  */    
 public class GridPaneAuthentification extends GridPane {
 
-    public GridPaneAuthentification(Stage stage,Connection con){
+    public GridPaneAuthentification(Stage stage,Connection con) throws FileNotFoundException{
         this.setStyle("-fx-background-color : #FEC98F");
         
         //PARTIE INSCRIPTION
         //création des labels et champs de saisie
+        Label logoAccueil = recupererLogo();
         Label titre = new Label("Inscription");
         titre.setFont(new Font(20));
         titre.setStyle("-fx-max-width: 50");
@@ -57,22 +61,23 @@ public class GridPaneAuthentification extends GridPane {
         Label panneau = new Label();
         
         //ajout des composants au GridPane (colonne,ligne)
-        this.add(titre,1,0);
-        this.add(labelNom, 0, 1);
-        this.add(Fnom, 1, 1);
-        this.add(labelPrenom, 0, 2);
-        this.add(Fprenom, 1, 2);
-        this.add(labelEmail, 0, 3);
-        this.add(Femail, 1, 3);
-        this.add(labelPass, 0, 4);
-        this.add(Fpass, 1, 4);
-        this.add(labelCodePostal, 0, 5);
-        this.add(Fcodepostal, 1, 5);
-        this.add(B_Inscription, 1, 6);  
-        this.add(panneau,1,7);
+        this.add(logoAccueil,1,0,3,1);
+        this.add(titre,1,1);
+        this.add(labelNom, 0, 2);
+        this.add(Fnom, 1, 2);
+        this.add(labelPrenom, 0, 3);
+        this.add(Fprenom, 1, 3);
+        this.add(labelEmail, 0, 4);
+        this.add(Femail, 1, 4);
+        this.add(labelPass, 0, 5);
+        this.add(Fpass, 1, 5);
+        this.add(labelCodePostal, 0, 6);
+        this.add(Fcodepostal, 1, 6);
+        this.add(B_Inscription, 1, 7);  
+        this.add(panneau,1,8);
         
         //ajout de marges autour pour centrer
-        this.setPadding(new Insets(150-this.getHeight(), 100+this.getWidth(), 150+this.getHeight(), 100-this.getWidth()));
+        this.setPadding(new Insets(30-this.getHeight(), 100+this.getWidth(), 50+this.getHeight(), 100-this.getWidth()));
         
 //action de l'appuie sur le bouton inscription
         B_Inscription.setOnAction((t) ->{
@@ -117,13 +122,13 @@ public class GridPaneAuthentification extends GridPane {
         Label panneau2 = new Label();
         
         //ajout des composants au GridPane (colonne,ligne)
-        this.add(titre2,3,0);
-        this.add(labelEmail2, 2, 1);
-        this.add(Femail2, 3, 1);
-        this.add(labelPass2, 2, 2);
-        this.add(Fpass2, 3, 2);
-        this.add(B_Connexion, 3, 6);
-        this.add(panneau2,3,7);
+        this.add(titre2,3,1);
+        this.add(labelEmail2, 2, 2);
+        this.add(Femail2, 3, 2);
+        this.add(labelPass2, 2, 3);
+        this.add(Fpass2, 3, 3);
+        this.add(B_Connexion, 3, 7);
+        this.add(panneau2,3,8);
         
         
         //action de l'appuie sur le bouton connexion
@@ -178,6 +183,17 @@ public class GridPaneAuthentification extends GridPane {
             
         });
 
+    }
+    
+        //récupère le logo du site et l'enregistre dans un label pour être affiché par la suite
+    public static Label recupererLogo() throws FileNotFoundException{
+        FileInputStream image = new FileInputStream("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\logo_accueil_lemauvaiscoin.png");
+        Image i = new Image(image);
+        ImageView imageView = new ImageView(i);
+        imageView.setFitHeight(150);
+        imageView.setFitWidth(320);
+        Label logo = new Label("",imageView);
+        return logo;
     }
 }
 
