@@ -22,8 +22,10 @@ import java.io.InputStream;
 import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import static java.time.LocalDate.now;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -136,7 +138,7 @@ public class ObjetPlus extends GridPane{
     //action de l'appuie sur le bouton enchere
     Bencherir.setOnAction((t) ->{
         
-        String quand = now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        Timestamp quand = Timestamp.valueOf(LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
         System.out.println(quand);
         int nouvprix = Integer.parseInt(TnouvPrix.getText());
         String email;

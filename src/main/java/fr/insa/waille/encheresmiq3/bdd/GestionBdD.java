@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,8 +76,8 @@ public class GestionBdD {
                         generated always as identity,
                         titre varchar(500) not null,
                         description text not null,
-                        debut varchar(200) not null,
-                        fin varchar(200) not null,
+                        debut timestamp not null,
+                        fin timestamp not null,
                         prix_base integer not null,
                         categorie integer not null,
                         propose_par integer not null,
@@ -88,7 +89,7 @@ public class GestionBdD {
                     create table enchere (
                         id integer not null primary key
                         generated always as identity,
-                        quand varchar(200) not null,
+                        quand timestamp not null,
                         montant integer not null,
                         de integer not null,
                         sur integer not null
@@ -716,7 +717,7 @@ public class GestionBdD {
         }
     }
     
-    public static void creeEnchere(Connection con,String quand,int montant,int de,int sur)
+    public static void creeEnchere(Connection con,Timestamp quand,int montant,int de,int sur)
                 throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -724,7 +725,7 @@ public class GestionBdD {
                     insert into enchere(quand, montant, de, sur)
                     values (?, ?, ?, ?)
                     """)) {
-            pst.setString(1, quand);
+            pst.setTimestamp(1, quand);
             pst.setInt(2, montant);
             pst.setInt(3, de);
             pst.setInt(4, sur);
@@ -767,20 +768,20 @@ public class GestionBdD {
         }
         return prixmax;
     }
-    
-    public static void demandeEnchere(Connection con)
-                throws SQLException {
-            System.out.println("quand :");
-            String quand = Lire.S();
-            System.out.println("montant:");
-            int montant = Lire.i();
-            System.out.println("de :");
-            int de = Lire.i();
-            System.out.println("sur :");
-            int sur = Lire.i();
-            creeEnchere(con, quand, montant, de, sur);
-            
-    }
+//  Méthode pour affichage dans la console : non adaptée aux timestamp    
+//    public static void demandeEnchere(Connection con)
+//                throws SQLException {
+//            System.out.println("quand :");
+//            String quand = Lire.S();
+//            System.out.println("montant:");
+//            int montant = Lire.i();
+//            System.out.println("de :");
+//            int de = Lire.i();
+//            System.out.println("sur :");
+//            int sur = Lire.i();
+//            creeEnchere(con, quand, montant, de, sur);
+//            
+//    }
     
     public static ObservableList rechercheEnchereParUtilisateur(Connection con,int idUser)
             throws SQLException, IOException, ClassNotFoundException{
@@ -1291,7 +1292,7 @@ public class GestionBdD {
     }
     
     //crée un objet avec image donnée sous forme de tableau de bytes 
-    public static void creeObjet(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie, byte[]image, int propose_par)
+    public static void creeObjet(Connection con,String titre,String description,Timestamp debut,Timestamp fin,int prix_base,int categorie, byte[]image, int propose_par)
             throws SQLException {
         con.setAutoCommit(false);
         try (PreparedStatement pst = con.prepareStatement(
@@ -1301,8 +1302,8 @@ public class GestionBdD {
                     """)) {
             pst.setString(1, titre);
             pst.setString(2, description);
-            pst.setString(3, debut);
-            pst.setString(4, fin);
+            pst.setTimestamp(3, debut);
+            pst.setTimestamp(4, fin);
             pst.setInt(5,prix_base);
             pst.setInt(6,categorie);
             pst.setBytes(7, image);
@@ -1320,7 +1321,7 @@ public class GestionBdD {
     
     
     //crée un objet avec image donnée sous la forme : nom du fichier
-        public static void creeObjetImage(Connection con,String titre,String description,String debut,String fin,int prix_base,int categorie,int propose_par, File file)
+        public static void creeObjetImage(Connection con,String titre,String description,Timestamp debut,Timestamp fin,int prix_base,int categorie,int propose_par, File file)
             throws SQLException, IOException {
         con.setAutoCommit(false);
         BufferedImage img = ImageIO.read(file);
@@ -1332,8 +1333,8 @@ public class GestionBdD {
                     """)) {
             pst.setString(1, titre);
             pst.setString(2, description);
-            pst.setString(3, debut);
-            pst.setString(4, fin);
+            pst.setTimestamp(3, debut);
+            pst.setTimestamp(4, fin);
             pst.setInt(5,prix_base);
             pst.setInt(6,categorie);
             pst.setInt(7,propose_par);
@@ -1514,17 +1515,20 @@ public class GestionBdD {
             File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.png");
             BufferedImage img = ImageIO.read(file);
             byte [] data = conversionImgToByte(img);
-            creeObjet(con, "oettinger", "biere de luxe et rentable", "lundi", "vendredi", 1, 3,data, 1);
-            creeObjet(con, "jack_daniel", "whisky de luxe", "lundi", "jeudi", 20, 3,data, 2);
-            creeObjet(con, "gin", "bien deg", "mardi", "jeudi", 15, 3,data, 3);
-            creeObjet(con, "4 chaises", "robustes", "mardi", "vendredi", 50, 1,data, 1);
-            creeObjet(con, "table", "bois massif parfaite pour les reichtags", "mercredi", "jeudi", 100, 1,data, 2);
-            creeObjet(con, "2 girafes", "contenance 6L", "mardi", "samedi", 45, 1,data, 3);
-            creeObjet(con, "pull INSAshop", "gris + vomis", "lundi", "vendredi", 10, 2,data, 1);
-            creeObjet(con, "casquette POLO", "beige", "lundi", "dimanche", 30, 2,data, 2);
-            creeObjet(con, "doudoune TNF", "rouge et noire", "mardi", "jeudi", 150, 2,data, 3);
-            creeEnchere(con,"mardi",40,3,1);
-            creeEnchere(con,"aujourd'hui",40,3,2);
+            //année voulue - 1900 pour l'année, 0 pour le 12ème mois (décembre)
+            Timestamp debut = new Timestamp(2022-1900,11,31,18,0,0,0);
+            Timestamp fin = new Timestamp(2023-1900,02,31,18,0,0,0);
+            creeObjet(con, "oettinger", "biere de luxe et rentable", debut, fin, 1, 3,data, 1);
+            creeObjet(con, "jack_daniel", "whisky de luxe", debut, fin, 20, 3,data, 2);
+            creeObjet(con, "gin", "bien deg", debut, fin, 15, 3,data, 3);
+            creeObjet(con, "4 chaises", "robustes", debut, fin, 50, 1,data, 1);
+            creeObjet(con, "table", "bois massif parfaite pour les reichtags", debut, fin, 100, 1,data, 2);
+            creeObjet(con, "2 girafes", "contenance 6L", debut, fin, 45, 1,data, 3);
+            creeObjet(con, "pull INSAshop", "gris + vomis", debut, fin, 10, 2,data, 1);
+            creeObjet(con, "casquette POLO", "beige", debut, fin, 30, 2,data, 2);
+            creeObjet(con, "doudoune TNF", "rouge et noire", debut, fin, 150, 2,data, 3);
+            creeEnchere(con,debut,40,3,1);
+            creeEnchere(con,debut,40,3,2);
         }
     }
     
@@ -1584,10 +1588,10 @@ public class GestionBdD {
                         afficheEncheres(con);
                         System.out.println("encheres récupérées OK");
                         break;
-                    case 8 :
-                        demandeEnchere(con);
-                        System.out.println(" encheres créées OK");
-                        break;  
+//                    case 8 :
+//                        demandeEnchere(con);
+//                        System.out.println(" encheres créées OK");
+//                        break;  
                     case 9 :
                         afficheObjets(con);
                         System.out.println("objets récupérés OK");

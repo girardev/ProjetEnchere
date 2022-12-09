@@ -30,6 +30,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -137,17 +138,18 @@ public class CreerObjet extends GridPane{
             String heuredebut = (String) listeHeureD.getSelectionModel().getSelectedItem();
             LocalDate fin = Dfin.getValue();
             String datefin = fin.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            String heurefin = (String) listeHeureD.getSelectionModel().getSelectedItem();
+            String heurefin = (String) listeHeureF.getSelectionModel().getSelectedItem();
             //crée les Timestamp correspondant au choix de l'utilisateur
             Timestamp timestampDebut = Timestamp.valueOf(datedebut + " " + heuredebut);
             Timestamp timestampFin = Timestamp.valueOf(datefin + " " + heurefin);
-            System.out.println(timestampDebut);
-            System.out.println(timestampFin);
             
+            System.out.println("debut Enchere : " + timestampDebut.toString());
+            System.out.println("heure actuelle : " + LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
             
             int prix = Integer.parseInt(Fprix.getText());
             String categorie = (String) listeCategorie.getSelectionModel().getSelectedItem();
             
+            String err; //message d'erreur à afficher
             int categorieInt = -1;
             try {
                 categorieInt = getIdCategorie(con,categorie);
@@ -162,14 +164,19 @@ public class CreerObjet extends GridPane{
                 propose_par = getIdUtilisateur(con,email);
             } catch (SQLException ex) {
                 Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
+                err = "utilisateur non reconnu";
             }
             
-            if(!(categorieInt==-1||propose_par==-1)){
+            //vérifie que les dates entrées sont valides
+            err = controleSaisieDates(timestampDebut, timestampFin);
+            panneau.setText(err);
+            
+            if(categorieInt!=-1&&propose_par!=-1&&err==""){
             
                 //utilisation de la fonction creeObjet
                 try {
                     try {
-                        creeObjetImage(con,titre,description,datedebut,datefin,prix,categorieInt, propose_par, img);
+                        creeObjetImage(con,titre,description,timestampDebut,timestampFin,prix,categorieInt, propose_par, img);
                     } catch (IOException ex) {
                         Logger.getLogger(CreerObjet.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -186,13 +193,10 @@ public class CreerObjet extends GridPane{
                 panneau.setText("Ajout de l'objet effectué");
             }
             else{
-                Ftitre.setText("");
-                Fdesc.setText("");
                 Ddebut.setValue(null);
                 Dfin.setValue(null);
-                Fprix.setText("");
 
-                panneau.setText("Ajout de l'objet impossible à effectuer"); 
+                panneau.setText(err); 
             }
             
             
@@ -218,8 +222,22 @@ public class CreerObjet extends GridPane{
            
             
         });
-        
-        
-        
+       
     }
+        //Renvoie un message d'erreur si date début > date fin ou date début < aujourd'hui
+        public static String controleSaisieDates(Timestamp deb, Timestamp fin){
+            String err; // message de retour à afficher
+            //récupère l'heure/date actuelle sous forme de timestamp :
+            Timestamp now = Timestamp.valueOf(LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
+            if(deb.after(fin)){
+                err = "Choisissez date début inférieure à date fin";
+            }
+            else if (deb.before(now)){
+               err = "Choisissez date début ultérieure à maintenant";        
+            }
+            else{
+                err = "";
+            }
+            return err;
+        }
 }
