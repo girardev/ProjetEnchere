@@ -34,7 +34,7 @@ public class GererEnchere extends GridPane{
               
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
-        Label Lobj = new Label("Voici les enchères que vous avez proposés");
+        Label Lobj = new Label("Voici la liste de tous les enchères");
         Button Bretour = new Button("Retour à l'accueil");
         Button Bactualiser = new Button("Actualiser le tableau");
         

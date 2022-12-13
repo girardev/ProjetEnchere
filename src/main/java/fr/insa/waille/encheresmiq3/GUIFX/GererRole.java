@@ -52,7 +52,8 @@ public class GererRole extends GridPane{
         ComboBox listeRoles = new ComboBox();
         ArrayList<String> Roles = new ArrayList<String>();
         Roles.add("Lambda");
-        Roles.add("Categorie");
+        Roles.add("Créateur");
+        Roles.add("Modérateur");
         Roles.add("Admin");
         listeRoles.getItems().setAll(Roles);
         

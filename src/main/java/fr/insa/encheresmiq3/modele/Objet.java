@@ -7,6 +7,7 @@ package fr.insa.encheresmiq3.modele;
 import fr.insa.waille.encheresmiq3.GUIFX.Accueil;
 import fr.insa.waille.encheresmiq3.GUIFX.GridPaneAuthentification;
 import fr.insa.waille.encheresmiq3.GUIFX.ObjetPlus;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.SupprimerObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import java.awt.image.BufferedImage;
@@ -39,6 +40,7 @@ public class Objet {
     private int propose_par;
     private BufferedImage image;
     private Button Bvoirplus;
+    private Button Bsuppr;
     private int prix_actuel;
     Connection con;
     
@@ -63,7 +65,9 @@ public class Objet {
         this.propose_par = propose_par;
         this.image = image;
         this.Bvoirplus=new Button("Voir plus");
+        this.Bsuppr=new Button("Supprimer");
         this.prix_actuel = max(prix_base,getPrixMaxSurObjet(con, id));
+        
         //action de l'appui sur le bouton voir plus
         Bvoirplus.setOnAction((t) ->{
             Connection con = null;
@@ -93,6 +97,25 @@ public class Objet {
             stage.show();
             
         });
+        
+        //action de l'appui sur le bouton voir plus
+        Bsuppr.setOnAction((t) ->{
+            Connection con = null;
+            try {
+                con = defautConnect();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                SupprimerObjet(con,id);
+            } catch (SQLException ex) {
+                Logger.getLogger(Objet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        });
+        
     }
 
     public Objet(int id, String titre, String description, int prix_base) throws ClassNotFoundException, SQLException {
@@ -147,6 +170,10 @@ public class Objet {
         return Bvoirplus;
     }
     
+    public Button getBsuppr() {
+        return Bsuppr;
+    }
+    
     public int getPrix_actuel() {
         return prix_actuel;
     }
@@ -185,6 +212,10 @@ public class Objet {
     
     public void setBvoirplus(Button Bvoirplus) {
         this.Bvoirplus = Bvoirplus;
+    }
+    
+    public void setBsuppr(Button Bsuppr) {
+        this.Bsuppr = Bsuppr;
     }
     
     public void setPrix_actuel(int prix_actuel) {

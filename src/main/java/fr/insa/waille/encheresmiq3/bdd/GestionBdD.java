@@ -46,7 +46,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
     }
     
     public static void creeSchema(Connection con)
@@ -1249,6 +1249,38 @@ public class GestionBdD {
         }
         return titre;
     }
+    
+    public static void SupprimerObjet(Connection con,int idobj)
+            throws SQLException {
+        con.setAutoCommit(false);
+                
+        try (PreparedStatement pst = con.prepareStatement(
+        "delete from enchere where sur = "+idobj+" "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+        con.setAutoCommit(false);
+        try (PreparedStatement pst = con.prepareStatement(
+        "delete from objet where id = "+idobj+" "))
+        {
+            pst.executeUpdate();
+            con.commit();
+            con.setAutoCommit(true);
+        } catch (SQLException ex) {
+            con.rollback();
+            throw ex;
+        } finally {
+            con.setAutoCommit(true);
+        }
+    }
+    
     
     public static ObservableList rechercheObjetParMotCle(Connection con, String motCle)
             throws SQLException, IOException, ClassNotFoundException{

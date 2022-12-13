@@ -104,6 +104,7 @@ public class Accueil extends GridPane {
         MenuItem mesobjets = new MenuItem("Mes objets");
         MenuItem gestionrole = new MenuItem("Gestion des rôles");
         MenuItem gestionenchere = new MenuItem("Gestion des enchères");
+        MenuItem gestionvente = new MenuItem("Gestion des ventes");
         MenuItem voirprofil = new MenuItem("Voir mon profil");
         MenuItem changermdp = new MenuItem("Changer mon mot de passe");
         MenuItem deco = new MenuItem("Déconnexion");
@@ -127,12 +128,15 @@ public class Accueil extends GridPane {
             Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        if(role.equals("Admin")){
+        if(role.equals("Admin")||role.equals("Modérateur")){
             leftBar.getMenus().addAll(gestionMenu);
-            gestionMenu.getItems().addAll(gestionrole);
             gestionMenu.getItems().addAll(gestionenchere);
+            gestionMenu.getItems().addAll(gestionvente);
         }
-        if(role.equals("Admin")||role.equals("Categorie")){
+        if(role.equals("Admin")){
+            gestionMenu.getItems().addAll(gestionrole);
+        }
+        if(role.equals("Admin")||role.equals("Créateur")){
             creationMenu.getItems().addAll(creerobj,creercat);
             
         }
@@ -371,6 +375,22 @@ public class Accueil extends GridPane {
             }
             
             stage.setScene(sc11);
+    
+        });
+        
+        //action de l'appui sur le bouton créer OBJET
+        gestionvente.setOnAction((t) ->{
+               
+            Scene sc12 = null;
+            try {
+                sc12 = new Scene(new GererVente(stage,con));
+            } catch (FileNotFoundException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException | ClassNotFoundException | IOException ex) {
+                Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            stage.setScene(sc12);
     
         });
         
