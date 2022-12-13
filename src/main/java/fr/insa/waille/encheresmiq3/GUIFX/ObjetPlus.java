@@ -57,6 +57,7 @@ public class ObjetPlus extends GridPane{
     String debut = obj.getDebut();
     String fin = obj.getFin();
     int prix_base = obj.getPrix_base();
+    int prix_actuel = obj.getPrix_actuel();
     int categorie = obj.getCategorie();
     int propose_par = obj.getPropose_par();
     
@@ -82,6 +83,9 @@ public class ObjetPlus extends GridPane{
     Label Lprix_base = new Label("Prix de base : ");
     Lprix_base.setStyle("-fx-max-width: 50");
     Lprix_base.setStyle("-fx-font-weight: bold");
+    Label Lprix_actuel = new Label("Prix actuel : ");
+    Lprix_actuel.setStyle("-fx-max-width: 50");
+    Lprix_actuel.setStyle("-fx-font-weight: bold");
     Label Lcategorie = new Label("Catégorie : ");
     Lcategorie.setStyle("-fx-max-width: 50");
     Lcategorie.setStyle("-fx-font-weight: bold");
@@ -100,6 +104,8 @@ public class ObjetPlus extends GridPane{
     Label ShowFin = new Label(fin);
     String Sprix_base = Integer.toString(prix_base);
     Label ShowPrix_base = new Label(Sprix_base+" €");
+    String Sprix_actuel = Integer.toString(prix_actuel);
+    Label ShowPrix_actuel = new Label(Sprix_actuel+" €");
     String Scategorie = getNomCategorie(con,categorie);
     Label ShowCategorie = new Label(Scategorie);
     String Spropose_par = getUtilisateur(con,propose_par);
@@ -116,14 +122,16 @@ public class ObjetPlus extends GridPane{
     this.add(ShowFin,1,6);
     this.add(Lprix_base,0,7);
     this.add(ShowPrix_base,1,7);
-    this.add(Lcategorie,0,8);
-    this.add(ShowCategorie,1,8);
-    this.add(Lpropose_par,0,9);
-    this.add(ShowPropose_par,1,9);
+    this.add(Lprix_actuel,0,8);
+    this.add(ShowPrix_actuel,1,8);
+    this.add(Lcategorie,0,9);
+    this.add(ShowCategorie,1,9);
+    this.add(Lpropose_par,0,10);
+    this.add(ShowPropose_par,1,10);
     this.add(Bprop,3,1);
     this.add(Bretour,4,1);
     this.add(panneau,3,2);
-    this.add(imageObjet, 0, 10,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
+    this.add(imageObjet, 0, 11,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
     
     
     //action de l'appuie sur le bouton enchere
