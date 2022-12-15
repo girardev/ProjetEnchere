@@ -177,11 +177,6 @@ public class ObjetPlus extends GridPane{
                 this.getChildren().remove(Bencherir);
                 this.getChildren().remove(TnouvPrix);
                 
-                try {
-                    System.out.println(getPrixMaxSurObjet(con, obj.getId()));
-                } catch (SQLException ex) {
-                    Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
-                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(ObjetPlus.class.getName()).log(Level.SEVERE, null, ex);
