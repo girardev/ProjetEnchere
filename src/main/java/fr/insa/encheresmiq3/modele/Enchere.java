@@ -11,6 +11,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getFinObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.Button;
@@ -21,7 +22,7 @@ import javafx.scene.control.Button;
  */
 public class Enchere {
     private int id;
-    private String quand;
+    private Timestamp quand;
     private int montant;
     private int de;
     private int sur;
@@ -33,7 +34,7 @@ public class Enchere {
     private String par;
         
 
-    public Enchere(int id, String quand, int montant, int de, int sur,String objet) throws ClassNotFoundException, SQLException {
+    public Enchere(int id, Timestamp quand, int montant, int de, int sur,String objet) throws ClassNotFoundException, SQLException {
         this.con = defautConnect();
         this.id = id;
         this.quand = quand;
@@ -71,7 +72,7 @@ public class Enchere {
         return id;
     }
     
-    public String getQuand() {
+    public Timestamp getQuand() {
         return quand;
     }
     
@@ -111,7 +112,7 @@ public class Enchere {
         this.id = id;
     }
     
-    public void setQuand(String quand) {
+    public void setQuand(Timestamp quand) {
         this.quand = quand;
     }
     

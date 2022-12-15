@@ -17,6 +17,7 @@ import java.io.IOException;
 import static java.lang.Integer.max;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Scene;
@@ -33,8 +34,8 @@ public class Objet {
     private int id;
     private String titre;
     private String description;
-    private String debut;
-    private String fin;
+    private Timestamp debut;
+    private Timestamp fin;
     private int categorie;
     public int prix_base;
     private int propose_par;
@@ -46,13 +47,13 @@ public class Objet {
     
     //constructeurs
 
-    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base,BufferedImage image, int propose_par) throws ClassNotFoundException, SQLException{
+    public Objet(int id, String titre, String description, Timestamp debut, Timestamp fin, int categorie, int prix_base,BufferedImage image, int propose_par) throws ClassNotFoundException, SQLException{
         this(id, titre, description, debut, fin, categorie, prix_base, image, propose_par, prix_base);
         
     }
 
     //constructeurs
-    public Objet(int id, String titre, String description, String debut, String fin, int categorie, int prix_base, BufferedImage image, int propose_par, int prix_base2) throws ClassNotFoundException, SQLException {
+    public Objet(int id, String titre, String description, Timestamp debut, Timestamp fin, int categorie, int prix_base, BufferedImage image, int propose_par, int prix_base2) throws ClassNotFoundException, SQLException {
         
         this.con = defautConnect();
         this.id = id;
@@ -142,11 +143,11 @@ public class Objet {
         return description;
     }
 
-    public String getDebut() {
+    public Timestamp getDebut() {
         return debut;
     }
 
-    public String getFin() {
+    public Timestamp getFin() {
         return fin;
     }
 
@@ -190,11 +191,11 @@ public class Objet {
         this.description = description;
     }
 
-    public void setDebut(String debut) {
+    public void setDebut(Timestamp debut) {
         this.debut = debut;
     }
 
-    public void setFin(String fin) {
+    public void setFin(Timestamp fin) {
         this.fin = fin;
     }
 

@@ -54,8 +54,8 @@ public class ObjetPlus extends GridPane{
         
     String titre = obj.getTitre();
     String description = obj.getDescription();
-    String debut = obj.getDebut();
-    String fin = obj.getFin();
+    Timestamp debut = obj.getDebut();
+    Timestamp fin = obj.getFin();
     int prix_base = obj.getPrix_base();
     int prix_actuel = obj.getPrix_actuel();
     int categorie = obj.getCategorie();
@@ -100,8 +100,8 @@ public class ObjetPlus extends GridPane{
     
     Label ShowTitre = new Label(titre);
     Label ShowDescription = new Label(description);
-    Label ShowDebut = new Label(debut);
-    Label ShowFin = new Label(fin);
+    Label ShowDebut = new Label(debut.toString());
+    Label ShowFin = new Label(fin.toString());
     String Sprix_base = Integer.toString(prix_base);
     Label ShowPrix_base = new Label(Sprix_base+" €");
     String Sprix_actuel = Integer.toString(prix_actuel);

@@ -18,6 +18,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,7 +48,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
+        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
     }
     
     public static void creeSchema(Connection con)
@@ -794,7 +796,7 @@ public class GestionBdD {
             while(resultats.next()){
                 //String nom_categorie = resultats.getString("categorie.nom");
                 int id = resultats.getInt("id");
-                String quand = resultats.getString("quand");
+                Timestamp quand = resultats.getTimestamp("quand");
                 int montant = resultats.getInt("montant");
                 int de = resultats.getInt("de");
                 int sur = resultats.getInt("sur");
@@ -828,7 +830,7 @@ public class GestionBdD {
             while(resultats.next()){
                 //String nom_categorie = resultats.getString("categorie.nom");
                 int id = resultats.getInt("id");
-                String quand = resultats.getString("quand");
+                Timestamp quand = resultats.getTimestamp("quand");
                 int montant = resultats.getInt("montant");
                 int de = resultats.getInt("de");
                 int sur = resultats.getInt("sur");
@@ -1030,8 +1032,8 @@ public class GestionBdD {
                 int id = resultat.getInt("id");
                 String titre = resultat.getString("titre");
                 String description = resultat.getString("description");
-                String debut = resultat.getString("debut");
-                String fin = resultat.getString("fin");
+                Timestamp debut = resultat.getTimestamp("debut");
+                Timestamp fin = resultat.getTimestamp("fin");
                 int categorie = resultat.getInt("categorie");
                 int prix_base = resultat.getInt("prix_base"); 
                 int propose_par = resultat.getInt("propose_par");
@@ -1114,8 +1116,8 @@ public class GestionBdD {
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
-                String debut = resultats.getString("debut");
-                String fin = resultats.getString("fin");
+                Timestamp debut = resultats.getTimestamp("debut");
+                Timestamp fin = resultats.getTimestamp("fin");
                 int prix_base = resultats.getInt("prix_base");
                 int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
@@ -1196,14 +1198,20 @@ public class GestionBdD {
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
-                String debut = resultats.getString("debut");
-                String fin = resultats.getString("fin");              
+                Timestamp debut = resultats.getTimestamp("debut");
+                Timestamp fin = resultats.getTimestamp("fin");              
                 int prix_base = resultats.getInt("prix_base");
                 int propose_par = resultats.getInt("propose_par");
                 
                 //récupération du tableau de bytes codant l'image :
                 byte[] byteImg = resultats.getBytes("image");
-                listeObj.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
+                Timestamp now = Timestamp.valueOf(LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
+                if(debut.before(now)&&fin.after(now)){
+                    listeObj.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
+                }
+                else{
+                    System.out.println("pas les bonnes dates");
+                }
             }
             return listeObj;
         }
@@ -1297,15 +1305,21 @@ public class GestionBdD {
                 int id = resultats.getInt("id");
                 String titre = resultats.getString("titre");
                 String description = resultats.getString("description");
-                String debut = resultats.getString("debut");
-                String fin = resultats.getString("fin");              
+                Timestamp debut = resultats.getTimestamp("debut");
+                Timestamp fin = resultats.getTimestamp("fin");              
                 int prix_base = resultats.getInt("prix_base");
                 int categorie = resultats.getInt("categorie");
                 int propose_par = resultats.getInt("propose_par");
                 
                 //récupération du tableau de bytes codant l'image :
                 byte[] byteImg = resultats.getBytes("image");
-                listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
+                Timestamp now = Timestamp.valueOf(LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
+                if(debut.before(now)&&fin.after(now)){
+                    listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
+                }
+                else{
+                    System.out.println("pas dans les bonnes dates");
+                }
             }
         }
         catch (SQLException ex) {
@@ -1550,15 +1564,16 @@ public class GestionBdD {
             File file = new File("src\\main\\java\\fr\\insa\\waille\\encheresmiq3\\GUIFX\\imgDeBase.png");
             BufferedImage img = ImageIO.read(file);
             byte [] data = conversionImgToByte(img);
-            //année voulue - 1900 pour l'année, 0 pour le 12ème mois (décembre)
-            Timestamp debut = new Timestamp(2022-1900,11,31,18,0,0,0);
-            Timestamp fin = new Timestamp(2023-1900,02,31,18,0,0,0);
+            //année voulue - 1900 pour l'année, 0 pour le 1er mois (janvier)
+            Timestamp debut = new Timestamp(2022-1900,11-1,31,18,0,0,0);
+            Timestamp debut2 = new Timestamp(2022-1900,12-1,31,18,0,0,0);
+            Timestamp fin = new Timestamp(2023-1900,02-1,31,18,0,0,0);
             creeObjet(con, "oettinger", "biere de luxe et rentable", debut, fin, 1, 3,data, 1);
             creeObjet(con, "jack_daniel", "whisky de luxe", debut, fin, 20, 3,data, 2);
             creeObjet(con, "gin", "bien deg", debut, fin, 15, 3,data, 3);
             creeObjet(con, "4 chaises", "robustes", debut, fin, 50, 1,data, 1);
-            creeObjet(con, "table", "bois massif parfaite pour les reichtags", debut, fin, 100, 1,data, 2);
-            creeObjet(con, "2 girafes", "contenance 6L", debut, fin, 45, 1,data, 3);
+            creeObjet(con, "table", "bois massif parfaite pour les reichtags", debut2, fin, 100, 1,data, 2);
+            creeObjet(con, "2 girafes", "contenance 6L", debut, debut, 45, 1,data, 3);
             creeObjet(con, "pull INSAshop", "gris + vomis", debut, fin, 10, 2,data, 1);
             creeObjet(con, "casquette POLO", "beige", debut, fin, 30, 2,data, 2);
             creeObjet(con, "doudoune TNF", "rouge et noire", debut, fin, 150, 2,data, 3);
