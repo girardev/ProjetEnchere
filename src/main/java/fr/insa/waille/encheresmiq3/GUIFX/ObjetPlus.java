@@ -7,6 +7,7 @@ package fr.insa.waille.encheresmiq3.GUIFX;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.creeEnchere;
+import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getNomCategorie;
@@ -128,7 +129,9 @@ public class ObjetPlus extends GridPane{
     this.add(ShowCategorie,1,9);
     this.add(Lpropose_par,0,10);
     this.add(ShowPropose_par,1,10);
-    this.add(Bprop,3,1);
+    if(!(getEmailUtilisateur(con,propose_par).equals(getEmailUtilisateurEnCours(con)))){
+        this.add(Bprop,3,1);
+    }
     this.add(Bretour,4,1);
     this.add(panneau,3,2);
     this.add(imageObjet, 0, 11,4,1); //affichage de l'image sur 4 colonnes pour éviter décalage labels
