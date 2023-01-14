@@ -48,7 +48,7 @@ public class GestionBdD {
 
     public static Connection defautConnect()
             throws ClassNotFoundException, SQLException {
-        return connectGeneralPostGres("localhost", 5439, "postgres", "postgres", "azerty");
+        return connectGeneralPostGres("localhost", 5432, "postgres", "postgres", "lledlled");
     }
     
     public static void creeSchema(Connection con)
@@ -1070,10 +1070,10 @@ public class GestionBdD {
         return byteArray;
     }
     
-    public static String getFinObjet(Connection con, int idObj)
+    public static Timestamp getFinObjet(Connection con, int idObj)
             throws SQLException{
         ResultSet resultat;
-        String fin = null;
+        Timestamp fin = null;
         con.setAutoCommit(false);
         try(Statement st = con.createStatement()){
             resultat = st.executeQuery(
@@ -1085,7 +1085,7 @@ public class GestionBdD {
             );
             //sauvegarde les résultats
             while(resultat.next()){
-                fin = resultat.getString("fin");
+                fin = resultat.getTimestamp("fin");
             }
         }
         catch (SQLException ex) {
@@ -1317,9 +1317,7 @@ public class GestionBdD {
                 if(debut.before(now)&&fin.after(now)){
                     listeObjets.add(new Objet(id,titre,description,debut,fin,categorie,prix_base,conversionByteToImg(byteImg),propose_par));
                 }
-                else{
-                    System.out.println("pas dans les bonnes dates");
-                }
+                
             }
         }
         catch (SQLException ex) {
@@ -1570,8 +1568,9 @@ public class GestionBdD {
             Timestamp debut = new Timestamp(2022-1900,11-1,31,18,0,0,0);
             Timestamp debut2 = new Timestamp(2022-1900,12-1,31,18,0,0,0);
             Timestamp fin = new Timestamp(2023-1900,02-1,31,18,0,0,0);
+            Timestamp fin2 = new Timestamp(2022-1900,12-1,20,18,0,0,0);
             creeObjet(con, "téléphone", "nouvelle génération, compatible 6G", debut, fin, 50, 3,data, 1);
-            creeObjet(con, "jack_daniel", "whisky de luxe", debut, fin, 20, 7,data, 2);
+            creeObjet(con, "jack_daniel", "whisky de luxe", debut, fin2, 20, 7,data, 2);
             creeObjet(con, "Chateauneuf du pape", "année 1886, un peu vieillissant mais goûtu", debut, fin, 400, 7,data, 2);
             creeObjet(con, "Dom Perignon", "édition rare, bouteille dédicacée par le Pape", debut, fin, 500, 7,data, 2);
             creeObjet(con, "gin d'écosse", "délicieux", debut, fin, 15, 7,data, 3);
