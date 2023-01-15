@@ -4,16 +4,18 @@
  */
 package fr.insa.waille.encheresmiq3.GUIFX;
 
-import fr.insa.encheresmiq3.modele.Objet;
+import fr.insa.encheresmiq3.modele.Enchere;
 import static fr.insa.waille.encheresmiq3.GUIFX.Accueil.recupererLogo;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getEmailUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getIdUtilisateur;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheEnchereParUtilisateur;
-import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParUtilisateur;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
@@ -33,7 +36,8 @@ import javafx.stage.Stage;
 public class MesEncheres extends GridPane{
 
     public MesEncheres(Stage stage, Connection con) throws FileNotFoundException, SQLException, IOException, ClassNotFoundException{
-              
+         
+        
         //AFFICHAGE DU CONTENU DE LA FENETRE
         Label logo = recupererLogo();
         Label Lobj = new Label("Voici les enchères que vous avez proposés");
@@ -49,7 +53,7 @@ public class MesEncheres extends GridPane{
         
         String email = getEmailUtilisateurEnCours(con);
         int idUser = getIdUtilisateur(con,email);
-        ObservableList<Objet> listeAllEnchere = rechercheEnchereParUtilisateur(con,idUser);
+        ObservableList<Enchere> listeAllEnchere = rechercheEnchereParUtilisateur(con,idUser);
         affichageResultats(con,listeAllEnchere);
         
         //action de l'appui sur le bouton retour
@@ -89,8 +93,8 @@ public class MesEncheres extends GridPane{
         
     }
     //affiche la liste des objets sélectionnés dans une TableView :
-    public void affichageResultats(Connection con, ObservableList<Objet> listeAllEnchere){
-        TableView<Objet> table = new TableView<Objet>();
+    public void affichageResultats(Connection con, ObservableList<Enchere> listeAllEnchere){
+        TableView<Enchere> table = new TableView<Enchere>();
                 //remplissage de la table avec les objets
                 table.setItems(listeAllEnchere);
 
@@ -111,26 +115,48 @@ public class MesEncheres extends GridPane{
                 colmeilleur.setMinWidth(100);
                 colaction.setMinWidth(100);
                 colquand.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("quand"));
+                        new PropertyValueFactory<Enchere, String>("quand"));
 
                 colmontant.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("montant"));
+                        new PropertyValueFactory<Enchere, String>("montant"));
 
                 colsur.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("objet"));
+                        new PropertyValueFactory<Enchere, String>("objet"));
                 
                 colfin.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("fin"));
+                        new PropertyValueFactory<Enchere, String>("fin"));
                 
                 colmeilleur.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("meilleur"));
+                        new PropertyValueFactory<Enchere, String>("meilleur"));
                 
                 colaction.setCellValueFactory(
-                        new PropertyValueFactory<Objet, String>("Bsupprimer"));
+                        new PropertyValueFactory<Enchere, String>("Bsupprimer"));
 
                 table.getColumns().setAll(colquand, colmontant, colsur,colfin,colmeilleur,colaction);
 
-                table.setItems(listeAllEnchere);
+                
+                
+                int n = listeAllEnchere.size();
+                for (int i = 0; i<n ; i++){
+                    Timestamp finito = listeAllEnchere.get(i).getFin();
+                    Timestamp now = Timestamp.valueOf(LocalDate.now().atTime(LocalTime.now()).toString().replace("T", " "));
+                    //if(now.after(finito)){
+                       
+
+                    //}
+                
+                table.setRowFactory(tv -> {
+                         TableRow<Enchere> row = new TableRow<>();
+                         if (row.getIndex() == 1) {
+                            row.setStyle("-fx-background-color: red;");
+                         }
+                         return row ;
+                });    
+                
+                table.setItems(listeAllEnchere);    
+                   
+                }
+                 
                 //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
                 this.add(table, 0, 5,5,1);
     }

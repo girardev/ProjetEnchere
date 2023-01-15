@@ -34,7 +34,7 @@ public class Main extends Application {
         } catch (SQLException ex) {
             Logger.getLogger(GridPaneAuthentification.class.getName()).log(Level.SEVERE, null, ex);
         }
-        creeSchemaDeBase(con);
+        
         Scene sc = new Scene(new GridPaneAuthentification(stage,con));
         stage.setWidth(700);
         stage.setHeight(600);

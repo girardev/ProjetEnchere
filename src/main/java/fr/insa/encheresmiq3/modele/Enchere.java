@@ -27,7 +27,7 @@ public class Enchere {
     private int de;
     private int sur;
     private String objet;
-    private String fin;
+    private Timestamp fin;
     private String meilleur;
     private Button Bsupprimer;
     Connection con;
@@ -92,7 +92,7 @@ public class Enchere {
         return objet;
     }
     
-    public String getFin() {
+    public Timestamp getFin() {
         return fin;
     }
     
@@ -132,7 +132,7 @@ public class Enchere {
         this.objet = objet;
     }
     
-    public void setFin(String fin) {
+    public void setFin(Timestamp fin) {
         this.fin = fin;
     }
     

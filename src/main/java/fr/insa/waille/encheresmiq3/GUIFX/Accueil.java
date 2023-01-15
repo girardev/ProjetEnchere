@@ -6,6 +6,7 @@
  */
 package fr.insa.waille.encheresmiq3.GUIFX;
 
+import static com.sun.javafx.scene.control.skin.Utils.getResource;
 import javafx.application.Application;
 import fr.insa.encheresmiq3.modele.Objet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.defautConnect;
@@ -15,6 +16,7 @@ import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getPrixMaxSurObjet;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.getRoleUtilisateurEnCours;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParCategorie;
 import static fr.insa.waille.encheresmiq3.bdd.GestionBdD.rechercheObjetParMotCle;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -315,9 +317,10 @@ public class Accueil extends GridPane {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Accueil.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            };
+            //sc8.getStylesheets().add(getClass().getResource("Sample.css").toExternalForm());
             stage.setScene(sc8);
-    
+            
         });
         
         //action de l'appui sur le bouton mon profil
@@ -362,7 +365,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton gestion enchere
         gestionenchere.setOnAction((t) ->{
                
             Scene sc11 = null;
@@ -378,7 +381,7 @@ public class Accueil extends GridPane {
     
         });
         
-        //action de l'appui sur le bouton créer OBJET
+        //action de l'appui sur le bouton gestion vente
         gestionvente.setOnAction((t) ->{
                
             Scene sc12 = null;
