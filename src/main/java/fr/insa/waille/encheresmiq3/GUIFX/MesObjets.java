@@ -60,6 +60,7 @@ public class MesObjets extends GridPane{
             TableColumn colprix = new TableColumn("Prix de base");
             TableColumn colprixact = new TableColumn("Prix actuel");
             TableColumn colvoirplus = new TableColumn("Action");
+            TableColumn colsuppr = new TableColumn("Supprimer");
             coltitre.setMinWidth(150);
             coldescription.setMinWidth(150);
             colprix.setMinWidth(50);
@@ -78,8 +79,10 @@ public class MesObjets extends GridPane{
             
             colvoirplus.setCellValueFactory(
                     new PropertyValueFactory<Objet, String>("Bvoirplus"));
-
-            table.getColumns().setAll(coltitre, coldescription, colprix,colprixact, colvoirplus);
+            colsuppr.setCellValueFactory(
+                    new PropertyValueFactory<Objet, String>("Bsuppr"));
+            
+            table.getColumns().setAll(coltitre, coldescription, colprix,colprixact, colvoirplus,colsuppr);
             
             table.setItems(listeAllObj);
             //ajout de la table à la fenêtre (sur 5 colonnes et 1 ligne)
